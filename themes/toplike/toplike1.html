@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        /* Base Styling ala Indofinity Premium */
+        body { background: transparent; color: white; font-family: 'Inter', 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
+        
+        .container { 
+            width: 320px; 
+            background: rgba(10, 10, 12, 0.9); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Header Minimalis */
+        .header {
+            background: linear-gradient(90deg, #fe2c55, #7d2ae8);
+            padding: 10px 15px;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #list { padding: 5px 0; }
+
+        /* User Row Minimalis dengan Avatar */
+        .user-row { 
+            display: flex; 
+            align-items: center; 
+            padding: 8px 15px; 
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        .rank { 
+            font-size: 12px; 
+            font-weight: 900; 
+            color: #555; 
+            width: 20px;
+        }
+
+        /* Avatar Bulat ala TikTok */
+        .avatar-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            overflow: hidden;
+            background: #222;
+        }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .info { flex-grow: 1; min-width: 0; }
+        .name { 
+            font-size: 13px; 
+            font-weight: 600; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            color: #eee;
+        }
+
+        .score { 
+            font-size: 12px; 
+            font-weight: 700; 
+            color: #25f4ee; 
+        }
+
+        /* Styling Khusus Juara 1 */
+        .top-1 .rank { color: #fe2c55; }
+        .top-1 .avatar-box { border-color: #fe2c55; box-shadow: 0 0 10px rgba(254, 44, 85, 0.3); }
+        .top-1 .name { color: #fff; font-weight: 800; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span>❤️ Top Like Tap-Tap</span>
+            <span style="font-size: 10px; opacity: 0.7;">LIVE</span>
+        </div>
+        <div id="list">
+            <p style="text-align:center; padding: 20px; font-size: 12px; color: #555;">Menunggu Like...</p>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+
+        socket.on('init-leaderboards', (data) => {
+            if (data && data.likes) updateLeaderboardUI(data.likes);
+        });
+
+        socket.on('new-like', (data) => {
+            if (data && data.allLikes) updateLeaderboardUI(data.allLikes);
+        });
+
+        function updateLeaderboardUI(likesObj) {
+    const listElement = document.getElementById('list');
+    const entries = Object.entries(likesObj);
+    
+    if (entries.length === 0) return;
+
+    const sorted = entries
+        .map(([username, userData]) => {
+            // Kita cek semua kemungkinan properti foto dari library TikTokLive
+            const count = (typeof userData === 'object') ? (userData.count || 0) : userData;
+            
+            // Coba ambil profilePictureUrl, kalau gak ada coba displayAvatar
+            let pfp = null;
+            if (typeof userData === 'object') {
+                pfp = userData.profilePictureUrl || userData.displayAvatar || userData.avatar;
+            }
+            
+            return { username, count, pfp };
+        })
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+    listElement.innerHTML = sorted.map((user, index) => {
+        const isFirst = index === 0 ? 'top-1' : '';
+        
+        // Cek apakah pfp ada isinya, kalau gak ada baru pake UI-Avatars
+        const avatarSrc = (user.pfp && user.pfp.length > 5) 
+            ? user.pfp 
+            : `https://ui-avatars.com/api/?name=${user.username}&background=random&color=fff`;
+        
+        return `
+            <div class="user-row ${isFirst}">
+                <div class="rank">#${index + 1}</div>
+                <div class="avatar-box">
+                    <img src="${avatarSrc}" onerror="this.src='https://www.tiktok.com/favicon.ico'">
+                </div>
+                <div class="info">
+                    <div class="name">${user.username}</div>
+                    <div class="score">${user.count.toLocaleString()} Likes</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: rgba(10, 10, 12, 0.85);
+            --accent: #00e5ff;
+            --text: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center; /* Posisi Tengah Horizontal */
+            align-items: center;     /* Posisi Tengah Vertikal */
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Desain Bentuk Kapsul Minimalis */
+        .stat-capsule {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--bg-dark);
+            padding: 8px 25px;
+            border-radius: 50px; /* Membuat bentuk Kapsul */
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .stat-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Dot Live Berkedip */
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            background: #ff2d55;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff2d55;
+            animation: pulse 1.5s infinite;
+        }
+
+        .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 800;
+        }
+
+        .value {
+            font-size: 18px;
+            color: var(--text);
+            font-weight: 800;
+        }
+
+        .separator {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stat-capsule">
+        <div class="stat-group">
+            <div class="live-indicator"></div>
+            <div class="value" style="font-size: 14px; color: #ff2d55;">LIVE</div>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="stat-group">
+            <span class="label">Viewers</span>
+            <span class="value" id="view-count">0</span>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+
+        // Listener untuk update viewer count
+        socket.on('update-viewer-count', (data) => {
+            const el = document.getElementById('view-count');
+            // Menangani format data angka langsung atau object {count: x}
+            const count = (typeof data === 'object' && data !== null) ? data.count : data;
+            el.innerText = Number(count || 0).toLocaleString('id-ID');
+        });
+
+        // Debugging: Tes update manual via console browser jika perlu
+        // socket.emit('test-viewers', 1234);
+    </script>
+</body>
+</html>

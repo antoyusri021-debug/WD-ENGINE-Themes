@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { background: transparent; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; overflow: hidden; }
+        .leaderboard-gift { 
+            border: 2px solid #ffd700; border-radius: 15px; padding: 20px; 
+            width: 350px; background: rgba(0, 0, 0, 0.85); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        h2 { text-align: center; color: #ffd700; margin-top: 0; text-transform: uppercase; font-size: 18px; letter-spacing: 1px; }
+        
+        .user-row { 
+            display: flex; justify-content: space-between; padding: 12px; 
+            border-bottom: 1px solid #444; align-items: center;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .top-1 { 
+            color: #fff; font-weight: bold; font-size: 1.1em; 
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent); 
+            border-left: 3px solid #ffd700;
+        }
+
+        .avatar { width: 35px; height: 35px; border-radius: 50%; margin-right: 10px; border: 1px solid #ffd700; }
+        .rank { width: 30px; font-weight: bold; color: #ffd700; }
+        .name { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .score { color: #ffd700; font-weight: bold; min-width: 60px; text-align: right; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="leaderboard-gift">
+        <h2>🎁 Top Gifter (Total)</h2>
+        <div id="gift-list">
+            <p style="text-align:center; color: #888;">Menunggu sultan muncul...</p>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const listElement = document.getElementById('gift-list');
+
+        // Terima update dari server.js (io.emit('update-top-gift', sortedSultans))
+        socket.on('update-top-gift', (sultans) => {
+            console.log("Data diterima:", sultans); // Cek di console browser (F12)
+
+            if (!sultans || sultans.length === 0) {
+                listElement.innerHTML = '<p style="text-align:center; color: #888;">Menunggu sultan muncul...</p>';
+                return;
+            }
+
+            // Render list sultan yang sudah diurutkan dari server
+            listElement.innerHTML = sultans.map((s, index) => {
+                const isFirst = index === 0 ? 'top-1' : ''; 
+                const pfp = s.profilePic || 'https://www.tiktok.com/favicon.ico'; // Gambar cadangan
+                
+                return `
+                    <div class="user-row ${isFirst}">
+                        <div class="rank">#${index + 1}</div>
+                        <img src="${pfp}" class="avatar">
+                        <div class="name">${s.nickname || s.user}</div>
+                        <div class="score">x${s.total}</div>
+                    </div>
+                `;
+            }).join('');
+        });
+    </script>
+</body>
+</html>

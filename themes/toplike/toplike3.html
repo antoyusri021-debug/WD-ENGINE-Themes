@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { background: transparent; color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
+        
+        #list { display: flex; flex-direction: column; gap: 15px; }
+
+        /* Card Juara 1 dengan Mahkota Melayang */
+        .rank-1 {
+            position: relative;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), rgba(0,0,0,0.6));
+            border: 2px solid #ffd700;
+            padding: 15px;
+            border-radius: 15px;
+            width: 280px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        .crown {
+            position: absolute;
+            top: -22px;
+            left: 15px;
+            font-size: 30px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        /* Card Peringkat Bawah */
+        .rank-others {
+            display: flex;
+            align-items: center;
+            background: rgba(20, 20, 25, 0.8);
+            padding: 10px 15px;
+            border-radius: 10px;
+            width: 240px;
+            gap: 12px;
+            margin-left: 10px;
+            border-left: 4px solid #fe2c55;
+        }
+
+        .avatar-box {
+            border-radius: 50%;
+            overflow: hidden;
+            background: #222;
+            flex-shrink: 0;
+        }
+        
+        .rank-1 .avatar-box { width: 50px; height: 50px; border: 2px solid #ffd700; }
+        .rank-others .avatar-box { width: 35px; height: 35px; border: 1px solid rgba(255,255,255,0.2); }
+        
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .name { font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rank-1 .name { font-size: 16px; color: #fff; }
+        .rank-others .name { font-size: 13px; color: #ccc; }
+
+        .score { font-weight: 700; color: #25f4ee; }
+        .rank-1 .score { font-size: 15px; color: #ffd700; }
+        
+        /* Animasi Realtime - Biar kerasa pas datanya berubah */
+        .update-anim { animation: pulse 0.3s ease-in-out; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="list"></div>
+
+    <script>
+        const socket = io();
+
+        // 1. Dengerin data awal
+        socket.on('init-leaderboards', (data) => {
+            if (data && data.likes) updateUI(data.likes);
+        });
+
+        // 2. KUNCI REALTIME: Dengerin tiap ada like baru masuk
+        socket.on('new-like', (data) => {
+            if (data && data.allLikes) updateUI(data.allLikes);
+        });
+
+        // 3. Cadangan event server lo
+        socket.on('update-top-like', (data) => updateUI(data));
+
+        function updateUI(likesObj) {
+            const listElement = document.getElementById('list');
+            const sorted = Object.entries(likesObj)
+                .map(([username, userData]) => ({
+                    username,
+                    count: (typeof userData === 'object') ? (userData.count || 0) : userData,
+                    pfp: (typeof userData === 'object') ? (userData.avatar || userData.profilePictureUrl) : null
+                }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 5);
+
+            listElement.innerHTML = sorted.map((user, index) => {
+                const avatarSrc = (user.pfp && user.pfp.length > 5) ? user.pfp : `https://ui-avatars.com/api/?name=${user.username}&background=random&color=fff`;
+                
+                if (index === 0) {
+                    return `
+                        <div class="rank-1 update-anim">
+                            <div class="crown">👑</div>
+                            <div class="avatar-box"><img src="${avatarSrc}"></div>
+                            <div class="info">
+                                <div class="name">${user.username}</div>
+                                <div class="score">${user.count.toLocaleString()} LIKES</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="rank-others">
+                            <div class="avatar-box"><img src="${avatarSrc}"></div>
+                            <div class="info">
+                                <div class="name">${user.username}</div>
+                                <div class="score">${user.count.toLocaleString()}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+    </script>
+</body>
+</html>

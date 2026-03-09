@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Overlay - Dark Capsul</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        /* --- RESET & BASIC --- */
+        /* --- RESET & BASIC --- */
+        body { 
+            background: transparent; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden; 
+            height: 100vh; /* Full tinggi layar */
+            display: flex;
+            /* --- INI PERUBAHANNYA --- */
+            align-items: center;    /* Bikin konten ke tengah secara vertikal */
+            justify-content: flex-start; /* Tetap nempel di kiri */
+        }
+
+        /* --- CONTAINER UTAMA --- */
+        #chat-container { 
+            display: flex; 
+            gap: 12px;
+            width: 100%;
+            padding-left: 20px; /* Kasih jarak dikit dari pinggir layar kiri */
+        }
+
+        /* Layout Vertikal (Naik turun di tengah layar) */
+        #chat-container.vertical {
+            flex-direction: column;
+            justify-content: center; /* Chat baru akan muncul di tengah */
+        }
+
+        /* Layout Horizontal (Kiri ke kanan di tengah layar) */
+        #chat-container.horizontal {
+            flex-direction: row;
+            align-items: center; /* Rata tengah secara vertikal */
+        }
+
+        /* HORIZONTAL (Kiri-Kanan) */
+        #chat-container.horizontal {
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+
+        /* --- KAPSUL CHAT (DARK & MINIMALIS) --- */
+        .chat-card {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 15, 18, 0.85); /* Dark semi-transparan premium */
+            backdrop-filter: blur(10px); /* Efek blur kaca di OBS */
+            padding: 10px 15px;
+            border-radius: 30px; /* Bentuk Kapsul full */
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Border tipis biar tegas */
+            color: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* Bayangan soft */
+            
+            /* Animasi Masuk */
+            animation: slideInCapsule 0.4s ease forwards;
+            
+            /* Ukuran maksimal biar gak menuhi layar */
+            max-width: 400px; 
+            min-width: 200px;
+            width: fit-content;
+            
+            /* Jaga konten di dalem */
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* --- AVATAR TETESAN AIR (KUNCI DESAIN LU BROW!) --- */
+        .pfp-wrapper {
+            position: relative;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .pfp { 
+            width: 45px; 
+            height: 45px; 
+            object-fit: cover;
+            
+            /* LOGIK DESAIN LU: Kiri Bulat, Kanan Kotak (Bentuk Tetesan Air) */
+            /* Top-Left: 50%, Top-Right: 0%, Bottom-Right: 50%, Bottom-Left: 50% */
+            border-radius: 50% 0% 50% 50%;
+            
+            border: 2px solid rgba(255, 255, 255, 0.1); /* Border avatar soft */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* --- KONTEN TEKS (MINIMALIS) --- */
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .username { 
+            color: #25f4ee; /* Warna Cyan Neon (Secondary lo) */
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase; /* Biar pro */
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+            
+            /* Potong kalau kepanjangan */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message { 
+            margin: 0; 
+            font-size: 14px; 
+            line-height: 1.4; 
+            color: #efefef; /* Putih soft */
+            font-weight: 400;
+            word-wrap: break-word; /* Bungkus kata panjang */
+        }
+
+        /* --- ANIMASI & EFEK --- */
+        @keyframes slideInCapsule { 
+            0% { opacity: 0; transform: translateY(20px) scale(0.9); } 
+            100% { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+
+        .fade-out { 
+            animation: fadeOutCapsule 0.5s ease forwards; 
+        }
+        @keyframes fadeOutCapsule { 
+            to { opacity: 0; transform: translateY(-20px) scale(0.95); } 
+        }
+
+        /* Jarak antar chat kalau horizontal */
+        #chat-container.horizontal .chat-card {
+            margin-right: 12px;
+            margin-bottom: 0;
+        }
+         /* Jarak antar chat kalau vertikal */
+        #chat-container.vertical .chat-card {
+            margin-bottom: 12px;
+            margin-right: 0;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div id="chat-container" class="vertical"></div>
+
+    <script>
+    const socket = io();
+    let chatLimit = 1;
+    let chatTimer = 15;
+    
+    // TEMPAT NYIMPEN JADWAL HAPUS CHAT
+    const activeTimers = new Map();
+
+    function applyConfig(data) {
+        const container = document.getElementById('chat-container');
+        if (!container) return;
+
+        chatLimit = parseInt(data.limit || data.chatLimit) || 1;
+        chatTimer = data.timer !== undefined ? parseInt(data.timer) : 15;
+
+        container.className = data.layout || 'vertical';
+
+        // --- KUNCI UTAMA BIAR NGAK HILANG ---
+        if (chatTimer === 0) {
+            console.log("🔥 TIMER 0: Membatalkan semua jadwal hapus chat!");
+            // Berhentiin semua timer yang lagi jalan
+            activeTimers.forEach((timeoutId) => clearTimeout(timeoutId));
+            activeTimers.clear();
+            
+            // Paksa chat yang lagi 'fade-out' buat muncul lagi
+            document.querySelectorAll('.chat-card').forEach(card => {
+                card.classList.remove('fade-out');
+            });
+        }
+
+        checkAndRemoveExtra(container);
+    }
+
+    // Ambil setting awal dari URL
+    const params = new URLSearchParams(window.location.search);
+    applyConfig(Object.fromEntries(params));
+
+    // Terima update realtime dari Dashboard
+    socket.on('update-chat-config', (config) => {
+        applyConfig(config);
+    });
+
+    function checkAndRemoveExtra(container) {
+        while (container.children.length > chatLimit) {
+            const first = container.firstChild;
+            if (first) {
+                // Hapus catatan timernya kalau chat dibuang karena limit
+                if (first.id && activeTimers.has(first.id)) {
+                    clearTimeout(activeTimers.get(first.id));
+                    activeTimers.delete(first.id);
+                }
+                container.removeChild(first);
+            }
+        }
+    }
+
+    socket.on('display-chat', (data) => {
+        const container = document.getElementById('chat-container');
+        if (!container) return;
+
+        const card = document.createElement('div');
+        card.className = 'chat-card';
+        
+        // Kasih ID unik buat setiap chat biar bisa dilacak timernya
+        const cardId = 'chat-' + Date.now() + Math.random();
+        card.id = cardId;
+        
+        card.innerHTML = `
+            <div class="pfp-wrapper">
+                <img src="${data.profilePictureUrl || 'https://www.w3schools.com/howto/img_avatar.png'}" 
+                    class="pfp" 
+                    onerror="this.src='https://www.w3schools.com/howto/img_avatar.png'">
+            </div>
+            <div class="user-info">
+                <span class="username">${data.nickname || data.user || 'User'}</span>
+                <p class="message">${data.message}</p>
+            </div>
+        `;
+        
+        container.appendChild(card);
+        checkAndRemoveExtra(container);
+
+        // JALANKAN TIMER HANYA JIKA > 0
+        if (chatTimer > 0) {
+            const timeoutId = setTimeout(() => {
+                if (card && card.parentNode === container) {
+                    card.classList.add('fade-out');
+                    // Tunggu animasi fade-out selesai baru hapus element
+                    const removeId = setTimeout(() => {
+                        if (card.parentNode === container) {
+                            container.removeChild(card);
+                            activeTimers.delete(cardId);
+                        }
+                    }, 500);
+                    activeTimers.set(cardId, removeId);
+                }
+            }, chatTimer * 1000);
+
+            // Simpan ID timer biar bisa dibatalin pas lo ganti settingan
+            activeTimers.set(cardId, timeoutId);
+        }
+    });
+</script>
+</body>
+</html>

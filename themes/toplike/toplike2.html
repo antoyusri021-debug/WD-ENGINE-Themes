@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { background: transparent; color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 15px; overflow: hidden; }
+        
+        #list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; /* Tambah gap dikit biar mahkota gak ketutup */
+            perspective: 1000px;
+        }
+
+        .user-pill { 
+            display: flex; 
+            align-items: center; 
+            background: rgba(20, 20, 25, 0.85); 
+            padding: 6px 15px 6px 6px; 
+            border-radius: 50px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: fit-content;
+            min-width: 180px;
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            position: relative;
+            transition: all 0.2s ease-out; /* Biar gerakan angka halus */
+        }
+
+        .avatar-box {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #fe2c55;
+            margin-right: 10px;
+            background: #000;
+        }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Mahkota Juara 1 */
+        .crown {
+            position: absolute;
+            top: -18px;
+            left: 5px;
+            font-size: 20px;
+            display: none;
+            z-index: 20;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .info { display: flex; flex-direction: column; justify-content: center; }
+        
+        .name { 
+            font-size: 12px; 
+            font-weight: 800; 
+            color: #fff;
+            max-width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .score-tag { 
+            font-size: 10px; 
+            font-weight: 600; 
+            color: #25f4ee; 
+            background: rgba(37, 244, 238, 0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+        .rank-badge {
+            margin-left: auto;
+            font-size: 14px;
+            font-weight: 900;
+            color: rgba(255,255,255,0.2);
+            padding-left: 10px;
+        }
+
+        /* Styling Juara 1 + Tampilkan Mahkota */
+        .top-1 { 
+            border: 1.5px solid #ffd700;
+            background: rgba(255, 215, 0, 0.15);
+            transform: scale(1.05);
+        }
+        .top-1 .crown { display: block; } /* Munculin mahkota cuma di rank 1 */
+        .top-1 .avatar-box { border-color: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .top-1 .rank-badge { color: #ffd700; opacity: 1; }
+
+        /* Animasi Pas Angka Berubah */
+        .bump { animation: bumpAnim 0.2s ease-out; }
+        @keyframes bumpAnim {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="list"></div>
+
+    <script>
+        const socket = io();
+
+        // 1. Dengerin event 'new-like' buat Realtime secepat kilat!
+        socket.on('new-like', (data) => {
+            if (data && data.allLikes) updateUI(data.allLikes);
+        });
+
+        // 2. Tetap dengerin update berkala buat sinkronisasi
+        socket.on('update-top-like', (data) => updateUI(data));
+        
+        // 3. Data awal pas baru buka browser
+        socket.on('init-leaderboards', (data) => { 
+            if(data && data.likes) updateUI(data.likes); 
+        });
+
+        function updateUI(likesObj) {
+            const listElement = document.getElementById('list');
+            const sorted = Object.entries(likesObj)
+                .map(([username, userData]) => ({
+                    username,
+                    count: (typeof userData === 'object') ? (userData.count || 0) : userData,
+                    pfp: (typeof userData === 'object') ? (userData.profilePictureUrl || userData.displayAvatar || userData.avatar) : null
+                }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 5);
+
+            // Cek kalau ada perubahan buat kasih efek bump
+            listElement.innerHTML = sorted.map((user, index) => {
+                const isFirst = index === 0 ? 'top-1' : '';
+                const avatarSrc = (user.pfp && user.pfp.length > 5) 
+                    ? user.pfp 
+                    : `https://ui-avatars.com/api/?name=${user.username}&background=random&color=fff`;
+                
+                return `
+                    <div class="user-pill ${isFirst}">
+                        <div class="crown">👑</div>
+                        <div class="avatar-box">
+                            <img src="${avatarSrc}" onerror="this.src='https://www.tiktok.com/favicon.ico'">
+                        </div>
+                        <div class="info">
+                            <div class="name">${user.username}</div>
+                            <div class="score-tag">${user.count.toLocaleString()} ❤️</div>
+                        </div>
+                        <div class="rank-badge">#${index + 1}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
