@@ -152,8 +152,9 @@
     
     <div id="chat-container" class="vertical"></div>
 
-    <script>
-    const socket = io();
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    const socket = io("http://localhost:3000");
     let chatLimit = 1;
     let chatTimer = 15;
     
