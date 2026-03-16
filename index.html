@@ -4,221 +4,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WDTiktok Engine - Akses Demo</title>
+    <title>WDTiktok Engine - Professional Streaming Solution</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f1113;
-            --card-bg: #1a1d21;
-            --primary-gold: #ffc107;
+            --bg-color: #0b0d0f;
+            --card-bg: #141619;
+            --input-bg: #0b0d0f;
+            --border-color: rgba(255, 255, 255, 0.05);
+            
+            /* Warna Aksen yang Lebih Halus & Profesional */
+            --gold-gradient: linear-gradient(135deg, #f1c40f 0%, #d35400 100%);
+            --premium-gradient: linear-gradient(135deg, #c3a561 0%, #ecf0f1 50%, #c3a561 100%); /* Warna Platinum/Gold Mewah */
+            
             --text-main: #ffffff;
-            --text-dim: #9da3ae;
-            --accent-red: #ff4444;
+            --text-dim: rgba(255, 255, 255, 0.7);
+            
+            --ease: cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            padding: 40px 20px;
-            overflow-x: hidden;
+            padding: 80px 20px;
+            /* Efek Grid Halus di Background */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
         }
 
         .container {
-            max-width: 650px;
+            max-width: 720px;
             width: 100%;
             text-align: center;
-            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Animasi Fade In Saat Load */
+            animation: fadeInPage 1s var(--ease) forwards;
+            opacity: 0;
         }
 
+        @keyframes fadeInPage {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(20px); }
+        }
+
+        /* Badge Tiktok yang Lebih Bagus */
         .badge-dev {
-            display: inline-block;
-            background: rgba(255, 193, 7, 0.1);
-            color: var(--primary-gold);
-            border: 1px solid var(--primary-gold);
-            padding: 5px 18px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-dim);
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: 0.3s;
         }
+        
+        .badge-dev:hover {
+            border-color: rgba(241, 196, 15, 0.3);
+            background: rgba(241, 196, 15, 0.03);
+            color: #f1c40f;
+        }
+        
+        .badge-dev img { width: 20px; }
 
+        /* Judul Gede & Efek Gradient */
         h1 {
-            font-size: 3rem;
+            font-size: 4.5rem;
             margin: 0;
             font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -3px;
         }
 
         h1 span {
-            color: var(--primary-gold);
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero-desc {
             color: var(--text-dim);
-            font-size: 1.1rem;
-            margin: 20px auto 40px;
+            font-size: 1.25rem;
+            margin: 25px auto 60px;
+            max-width: 500px;
+            line-height: 1.6;
         }
 
+        /* Card Modern - Glassmorphism Halus */
         .main-card {
             background: var(--card-bg);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid #2d3139;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            padding: 50px;
+            border-radius: 32px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
             margin-bottom: 30px;
+            width: 100%;
+            transition: 0.5s var(--ease);
+        }
+        
+        .main-card:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+        }
+        
+        .main-card h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            letter-spacing: -1px;
         }
 
-        .btn-download {
-            background-color: var(--primary-gold);
-            color: #000;
+        /* Grouping Tombol */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .btn-base {
             text-decoration: none;
-            padding: 18px 50px;
-            font-weight: bold;
-            border-radius: 12px;
-            display: inline-block;
-            transition: 0.3s;
+            padding: 22px 0;
+            width: 100%;
+            max-width: 400px;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 16px;
+            transition: 0.4s var(--ease);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-download:hover {
+        /* Tombol Standar - Minimalis tapi Elegan */
+        .btn-standard {
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-standard:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
             transform: translateY(-3px);
-            background-color: #ffca28;
         }
 
+        /* Tombol Premium - Benar-benar Mewah */
+        .btn-premium {
+            background: var(--premium-gradient);
+            color: #000;
+            box-shadow: 0 10px 30px rgba(195, 165, 97, 0.3);
+            background-size: 200% auto;
+        }
+
+        /* Animasi Berkilau Mengalir di Premium Button */
+        @keyframes shineFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 15px 40px rgba(195, 165, 97, 0.5);
+            animation: shineFlow 1.5s linear infinite;
+        }
+
+        /* Ikon Tombol */
+        .btn-base svg { width: 20px; transition: 0.3s var(--ease); }
+        .btn-base:hover svg { transform: translateX(3px); }
+
+        /* Comment Section yang Lebih Modern */
         .comment-section {
             background: var(--card-bg);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid #2d3139;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
             text-align: left;
+            width: 100%;
+            transition: 0.3s;
         }
+        
+        .comment-section:hover { border-color: rgba(255, 255, 255, 0.08); }
 
         .comment-section h3 {
-            margin: 0 0 15px 0;
-            color: var(--primary-gold);
-            font-size: 1rem;
+            margin: 0 0 5px 0;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
+        
+        .comment-section p { margin: 0; color: var(--text-dim); font-size: 0.95rem; }
 
         .input-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         input {
             flex: 1;
-            background: #111;
-            border: 1px solid #333;
-            padding: 12px;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px 20px;
             color: white;
-            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            border-radius: 12px;
             outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #f1c40f;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.2);
         }
 
         .btn-send {
-            background: var(--primary-gold);
+            background: var(--gold-gradient);
+            color: #000;
             border: none;
-            padding: 0 20px;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 0 35px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
             cursor: pointer;
+            transition: 0.3s;
         }
 
-        /* --- OVERLAY CHAT KAPSUL VERTIKAL --- */
+        .btn-send:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+        
+        .btn-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* --- OVERLAY CHAT DENGAN ANIMASI HALUS --- */
         #overlay-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 320px;
+            bottom: 40px;
+            right: 40px;
+            width: 350px;
             display: flex;
             flex-direction: column-reverse;
-            /* Baru di bawah, lama naik ke atas */
-            gap: 12px;
+            gap: 15px;
             z-index: 100;
             pointer-events: none;
         }
 
         .chat-bubble {
-            background: rgba(30, 33, 38, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 193, 7, 0.4);
-            padding: 10px 20px;
-            border-radius: 50px;
-            /* Bentuk Kapsul */
-            color: white;
-            font-size: 0.85rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            background: rgba(20, 22, 25, 0.85);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 14px 24px;
+            border-radius: 100px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
-            gap: 8px;
-            animation: bubbleUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            gap: 10px;
+            animation: bubbleSlideIn 0.5s var(--ease) forwards;
             max-width: fit-content;
             align-self: flex-end;
+            will-change: transform, opacity;
         }
+        
+        .chat-bubble:hover { border-color: rgba(241, 196, 15, 0.2); }
 
         .chat-bubble strong {
-            color: var(--primary-gold);
+            color: #f1c40f;
+            font-weight: 600;
         }
 
-        @keyframes bubbleUp {
-            from {
-                transform: translateY(40px) scale(0.8);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
+        @keyframes bubbleSlideIn {
+            from { transform: translateY(30px) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
         }
 
+        /* Animasi Hapus dengan Fade + Scale Down */
         .fade-out {
-            animation: fadeOut 0.8s ease forwards;
+            animation: fadeOutDown 0.6s var(--ease) forwards;
         }
 
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-        }
-
-        .dev-note {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 4px solid var(--primary-gold);
-            border-radius: 4px;
-            text-align: left;
-        }
-
-        .blink-dot {
-            height: 8px;
-            width: 8px;
-            background-color: var(--accent-red);
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 10px;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.2;
-            }
-        }
-
-        footer {
-            margin-top: 40px;
-            font-size: 0.8rem;
-            color: #444;
+        @keyframes fadeOutDown {
+            to { opacity: 0; transform: translateY(-10px) scale(0.9); }
         }
     </style>
 </head>
@@ -226,40 +326,43 @@
 <body>
 
     <div id="overlay-container"></div>
-
-    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"
-        preload="auto"></audio>
+    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
     <div class="container">
-        <div class="badge-dev">TikTok: @WebDev</div>
+        <a href="https://tiktok.com/@webdev_ysi" target="_blank" class="badge-dev">
+            <svg viewBox="0 0 448 512" fill="currentColor"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25v178.72A162.55 162.55 0 1 1 185 188.31v89.89a74.62 74.62 0 1 0 52.23 71.29V0h88a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14z"/></svg>
+            @WebDev
+        </a>
+        
         <h1>WD<span>Tiktok</span> Engine</h1>
-        <p class="hero-desc">Bikin interaksi TikTok Live kamu makin gampang dan simpel.</p>
+        <p class="hero-desc">Solusi otomatis interaksi Tiktok Live tingkat lanjut untuk kreator & brand profesional.</p>
 
         <div class="main-card">
-            <h2>Coba Versi Demo</h2>
-            <p style="color: var(--text-dim); margin-bottom: 35px;">Sikat file demonya di bawah buat ngetes langsung
-                gimana kerennya fitur overlay terbaru buatan kami.</p>
-            <a href="https://drive.google.com/file/d/1wySPHdgCiQss6xT2pIyS8UbQqjCABl6m/view?usp=drive_link" target="_blank" class="btn-download">GAS DOWNLOAD</a>
+            <h2>Download Center</h2>
+            <p style="color: var(--text-dim); font-size: 1.1rem; margin:0;">Pilih edisi yang sesuai dengan ambisi live streaming kamu.</p>
+            
+            <div class="button-group">
+                <!--<a href="update.html" class="btn-base btn-standard">
+                    CEK UPDATE TERBARU
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+                </a>-->
+                
+                <a href="update.html" class="btn-base btn-premium">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+                    CEK UPDATE TERBARU
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+                </a>
+            </div>
         </div>
 
         <div class="comment-section">
-            <h3>Jadilah Saksi Sejarah WD Engine</h3>
-            <p>Yuk, absen dan kasih dukungan buat perjalanan engine ini ke
-                depannya!</p>
+            <h3>Absen dulu brow!</h3>
+            <p>Ketik pesan di sini.</p>
             <div class="input-group">
-                <input type="text" id="commentInput" placeholder="Tulis komentar...">
+                <input type="text" id="commentInput" placeholder="Contoh: 'WDTiktok Engine emang Gacor!'">
                 <button id="sendBtn" class="btn-send" onclick="addComment()">KIRIM</button>
             </div>
         </div>
-
-        <div class="dev-note">
-            <div><span class="blink-dot"></span><strong style="color: var(--primary-gold);">PROSES PENGEMBANGAN</strong>
-            </div>
-            <p style="font-size: 0.85rem; color: var(--text-dim); margin: 5px 0 0 0;">Aplikasi ini masih dikembangin
-                terus. Masukan dari kamu bakal sangat membantu!</p>
-        </div>
-
-        <footer>Dibuat dengan ⚡ oleh WebDev | © 2026 WDTiktok Engine</footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
