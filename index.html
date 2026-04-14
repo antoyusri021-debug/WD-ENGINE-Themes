@@ -1,441 +1,179 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebDev - Professional Streaming Solution</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>WebDev Stream Sync | Monitoring Era</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        :root {
-            --bg-color: #0b0d0f;
-            --card-bg: #141619;
-            --input-bg: #0b0d0f;
-            --border-color: rgba(255, 255, 255, 0.05);
-            
-            /* Warna Aksen yang Lebih Halus & Profesional */
-            --gold-gradient: linear-gradient(135deg, #f1c40f 0%, #d35400 100%);
-            --premium-gradient: linear-gradient(135deg, #c3a561 0%, #ecf0f1 50%, #c3a561 100%); /* Warna Platinum/Gold Mewah */
-            
-            --text-main: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.7);
-            
-            --ease: cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 80px 20px;
-            /* Efek Grid Halus di Background */
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 50px 50px;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
         }
 
-        .container {
-            max-width: 720px;
-            width: 100%;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* Animasi Fade In Saat Load */
-            animation: fadeInPage 1s var(--ease) forwards;
-            opacity: 0;
-        }
-
-        @keyframes fadeInPage {
-            to { opacity: 1; transform: translateY(0); }
-            from { opacity: 0; transform: translateY(20px); }
-        }
-
-        /* Badge Tiktok yang Lebih Bagus */
-        .badge-dev {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .glass-card {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            color: var(--text-dim);
-            padding: 10px 24px;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 30px;
-            transition: 0.3s;
-        }
-        
-        .badge-dev:hover {
-            border-color: rgba(241, 196, 15, 0.3);
-            background: rgba(241, 196, 15, 0.03);
-            color: #f1c40f;
-        }
-        
-        .badge-dev img { width: 20px; }
-
-        /* Judul Gede & Efek Gradient */
-        h1 {
-            font-size: 4.5rem;
-            margin: 0;
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -3px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        h1 span {
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .glow-effect:hover {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
         }
 
-        .hero-desc {
-            color: var(--text-dim);
-            font-size: 1.25rem;
-            margin: 25px auto 60px;
-            max-width: 500px;
-            line-height: 1.6;
+        .hero-gradient {
+            background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.15), transparent);
         }
 
-        /* Card Modern - Glassmorphism Halus */
-        .main-card {
-            background: var(--card-bg);
-            padding: 50px;
-            border-radius: 32px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
-            margin-bottom: 30px;
-            width: 100%;
-            transition: 0.5s var(--ease);
+        /* Animasi Muncul */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .main-card:hover {
-            border-color: rgba(255, 255, 255, 0.08);
-            transform: translateY(-5px);
-        }
-        
-        .main-card h2 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin: 0 0 10px 0;
-            letter-spacing: -1px;
-        }
-
-        /* Grouping Tombol */
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            align-items: center;
-            margin-top: 40px;
-        }
-
-        .btn-base {
-            text-decoration: none;
-            padding: 22px 0;
-            width: 100%;
-            max-width: 400px;
-            font-weight: 700;
-            font-size: 1rem;
-            border-radius: 16px;
-            transition: 0.4s var(--ease);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Tombol Standar - Minimalis tapi Elegan */
-        .btn-standard {
-            background-color: transparent;
-            color: rgba(255, 255, 255, 0.8);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-standard:hover {
-            background-color: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            transform: translateY(-3px);
-        }
-
-        /* Tombol Premium - Benar-benar Mewah */
-        .btn-premium {
-            background: var(--premium-gradient);
-            color: #000;
-            box-shadow: 0 10px 30px rgba(195, 165, 97, 0.3);
-            background-size: 200% auto;
-        }
-
-        /* Animasi Berkilau Mengalir di Premium Button */
-        @keyframes shineFlow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-
-        .btn-premium:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 15px 40px rgba(195, 165, 97, 0.5);
-            animation: shineFlow 1.5s linear infinite;
-        }
-
-        /* Ikon Tombol */
-        .btn-base svg { width: 20px; transition: 0.3s var(--ease); }
-        .btn-base:hover svg { transform: translateX(3px); }
-
-        /* Comment Section yang Lebih Modern */
-        .comment-section {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            text-align: left;
-            width: 100%;
-            transition: 0.3s;
-        }
-        
-        .comment-section:hover { border-color: rgba(255, 255, 255, 0.08); }
-
-        .comment-section h3 {
-            margin: 0 0 5px 0;
-            color: #ffffff;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        
-        .comment-section p { margin: 0; color: var(--text-dim); font-size: 0.95rem; }
-
-        .input-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        input {
-            flex: 1;
-            background: var(--input-bg);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 18px 20px;
-            color: white;
-            font-family: inherit;
-            font-size: 1rem;
-            border-radius: 12px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            border-color: #f1c40f;
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.2);
-        }
-
-        .btn-send {
-            background: var(--gold-gradient);
-            color: #000;
-            border: none;
-            padding: 0 35px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-send:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-        
-        .btn-send:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* --- OVERLAY CHAT DENGAN ANIMASI HALUS --- */
-        #overlay-container {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            width: 350px;
-            display: flex;
-            flex-direction: column-reverse;
-            gap: 15px;
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        .chat-bubble {
-            background: rgba(20, 22, 25, 0.85);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            padding: 14px 24px;
-            border-radius: 100px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: bubbleSlideIn 0.5s var(--ease) forwards;
-            max-width: fit-content;
-            align-self: flex-end;
-            will-change: transform, opacity;
-        }
-        
-        .chat-bubble:hover { border-color: rgba(241, 196, 15, 0.2); }
-
-        .chat-bubble strong {
-            color: #f1c40f;
-            font-weight: 600;
-        }
-
-        @keyframes bubbleSlideIn {
-            from { transform: translateY(30px) scale(0.9); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        /* Animasi Hapus dengan Fade + Scale Down */
-        .fade-out {
-            animation: fadeOutDown 0.6s var(--ease) forwards;
-        }
-
-        @keyframes fadeOutDown {
-            to { opacity: 0; transform: translateY(-10px) scale(0.9); }
-        }
+        .animate-fade { animation: fadeIn 0.8s ease-out forwards; }
     </style>
 </head>
+<body class="bg-[#0f172a] text-slate-200 overflow-x-hidden hero-gradient">
 
-<body>
+    <nav class="fixed w-full z-50 transition-all duration-300 px-6 py-4" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="bg-cyan-500 p-2 rounded-lg">
+                    <i class="fas fa-sync-alt text-gray-900 animate-spin-slow"></i>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight">WEBDEV <span class="text-cyan-400 font-light">SYNC</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 items-center font-medium">
+                <a href="#features" class="hover:text-cyan-400 transition">Fitur</a>
+                <a href="#changelog" class="hover:text-cyan-400 transition">Update</a>
+                <a href="#download" class="bg-cyan-500 text-gray-900 px-6 py-2 rounded-full hover:bg-cyan-400 transition font-bold">Download</a>
+            </div>
+        </div>
+    </nav>
 
-    <div id="overlay-container"></div>
-    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
-    <div class="container">
-        <a href="https://tiktok.com/@webdev_ysi" target="_blank" class="badge-dev">
-            <svg viewBox="0 0 448 512" fill="currentColor"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25v178.72A162.55 162.55 0 1 1 185 188.31v89.89a74.62 74.62 0 1 0 52.23 71.29V0h88a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14z"/></svg>
-            @WebDev
-        </a>
-        
-        <h1>WebDev<span>Stream</span> Stream</h1>
-        <p class="hero-desc">Solusi otomatis interaksi Tiktok Live tingkat lanjut untuk kreator & brand profesional.</p>
-
-        <div class="main-card">
-            <h2>Download Center</h2>
-            <p style="color: var(--text-dim); font-size: 1.1rem; margin:0;">Pilih edisi yang sesuai dengan ambisi live streaming kamu.</p>
-            
-            <div class="button-group">
-                <a href="premium.html" class="btn-base btn-premium">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
-                    DOWNLOAD FOR WINDOWS
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+    <header class="relative pt-32 pb-20 px-6 text-center">
+        <div class="animate-fade">
+            <span class="px-4 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-sm font-semibold mb-6 inline-block">
+                Versi 1.4.0 Sekarang Tersedia
+            </span>
+            <h1 class="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent leading-tight">
+                Overlay Chat TikTok <br>Untuk Live Streamer
+            </h1>
+            <p class="max-w-2xl mx-auto text-slate-400 text-lg md:text-xl mb-10">
+                Solusi ringan untuk menampilkan interaksi penonton langsung di OBS. Sangat cocok untuk produksi e-sports dan konten kreator harian.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#download" class="bg-white text-gray-900 px-10 py-4 rounded-xl font-bold text-lg hover:bg-cyan-400 transition duration-300 flex items-center gap-2 shadow-lg shadow-cyan-500/20">
+                    <i class="fas fa-download"></i> Dapatkan Sekarang
                 </a>
+                <button onclick="showAlert()" class="glass-card px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition border border-slate-700">
+                    Dokumentasi
+                </button>
             </div>
         </div>
 
-        <div class="comment-section">
-            <h3>Absen dulu brow!</h3>
-            <p>Ketik pesan di sini.</p>
-            <div class="input-group">
-                <input type="text" id="commentInput" placeholder="Contoh: 'Webdev emang Gacor!'">
-                <button id="sendBtn" class="btn-send" onclick="addComment()">KIRIM</button>
+        <div class="mt-20 max-w-5xl mx-auto relative group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+            <div class="relative rounded-2xl overflow-hidden glass-card border border-slate-700">
+                <img src="https://via.placeholder.com/1200x650/0f172a/00e5ff?text=Dashboard+WebDev+Stream+Sync+Preview" alt="App Preview" class="w-full">
             </div>
         </div>
-    </div>
+    </header>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <section id="features" class="py-24 px-6 bg-[#0b1120]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Kenapa Memilih Stream Sync?</h2>
+                <div class="w-20 h-1 bg-cyan-500 mx-auto rounded-full"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-8 glass-card rounded-3xl hover:border-cyan-500/50 transition glow-effect">
+                    <div class="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-cyan-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Ringan & Cepat</h3>
+                    <p class="text-slate-400 leading-relaxed">Dikembangkan dengan optimasi tingkat tinggi, tidak membebani penggunaan CPU saat Anda bermain game berat.</p>
+                </div>
+                <div class="p-8 glass-card rounded-3xl hover:border-cyan-500/50 transition glow-effect">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-palette text-purple-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Custom Overlay</h3>
+                    <p class="text-slate-400 leading-relaxed">Tersedia berbagai template chat transparan yang bisa disesuaikan warnanya sesuai tema stream Anda.</p>
+                </div>
+                <div class="p-8 glass-card rounded-3xl hover:border-cyan-500/50 transition glow-effect">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-green-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Anti Delay</h3>
+                    <p class="text-slate-400 leading-relaxed">Sistem sinkronisasi terbaru memastikan komentar yang masuk tampil secara instan tanpa jeda lama.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="py-24 px-6">
+        <div class="max-w-4xl mx-auto bg-gradient-to-b from-slate-800 to-slate-900 rounded-[3rem] p-12 border border-slate-700 text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl"></div>
+            
+            <h2 class="text-4xl font-bold mb-4">Mulai Monitoring Sekarang</h2>
+            <p class="text-slate-400 mb-10">WebDev Stream Sync V1.4.0 (Windows 10/11)</p>
+            
+            <div class="grid md:grid-cols-2 gap-8 text-left mb-10">
+                <div id="changelog" class="bg-black/30 p-6 rounded-2xl border border-white/5">
+                    <h4 class="font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-list-ul"></i> Log Perubahan v1.4.0
+                    </h4>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-plus text-xs mt-1 text-green-500"></i> Monitoring tab baru</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-plus text-xs mt-1 text-green-500"></i> Perbaikan bug CSS transparan</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-plus text-xs mt-1 text-green-500"></i> Dukungan koneksi ganda</li>
+                    </ul>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <button id="downloadBtn" class="w-full bg-cyan-500 text-gray-900 py-5 rounded-2xl font-black text-2xl hover:bg-white transition-all transform active:scale-95 shadow-xl shadow-cyan-500/10">
+                        UNDUH SEKARANG
+                    </button>
+                    <p class="text-center mt-4 text-xs text-slate-500">Ukuran file: ~15MB | Format: .zip / .exe</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 border-t border-slate-800 text-center">
+        <p class="text-slate-500 text-sm">&copy; 2026 WebDev Stream Sync. Dikembangkan oleh <span class="text-slate-300 font-semibold">WebDev Media</span>.</p>
+    </footer>
+
     <script>
-        const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
-
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const sound = document.getElementById('notifSound');
-        let localComments = [];
-
-        function showOverlay(text) {
-            const container = document.getElementById('overlay-container');
-
-            // Aturan Maksimal 6 Komentar di Layar
-            if (container.children.length >= 6) {
-                const oldest = container.lastElementChild;
-                oldest.classList.add('fade-out');
-                setTimeout(() => oldest.remove(), 800);
+        // Efek scroll navbar
+        window.onscroll = function() {
+            const nav = document.getElementById('navbar');
+            if (window.pageYOffset > 50) {
+                nav.classList.add('bg-[#0f172a]/90', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-2');
+                nav.classList.remove('py-4');
+            } else {
+                nav.classList.remove('bg-[#0f172a]/90', 'backdrop-blur-md', 'border-b', 'border-slate-800', 'py-2');
+                nav.classList.add('py-4');
             }
+        };
 
-            const bubble = document.createElement('div');
-            bubble.className = 'chat-bubble';
-            bubble.innerHTML = `<strong>User:</strong> ${text}`;
-
-            container.prepend(bubble); // Masuk dari paling bawah
-
-            // Bunyi suara notif
-            sound.currentTime = 0;
-            sound.play().catch(() => { console.log("Klik layar dulu biar suara aktif!"); });
-
-            // Hapus otomatis tiap bubble setelah 12 detik
+        // Fungsi Tombol Download
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Menyiapkan File...';
             setTimeout(() => {
-                if (bubble) {
-                    bubble.classList.add('fade-out');
-                    setTimeout(() => bubble.remove(), 800);
-                }
-            }, 12000);
+                alert('Terima kasih telah menggunakan WebDev Stream Sync! Link download simulasi dipicu.');
+                this.innerHTML = 'UNDUH SEKARANG';
+            }, 1500);
+        });
+
+        function showAlert() {
+            alert('Halaman dokumentasi sedang dalam pengembangan.');
         }
-
-        async function addComment() {
-            const input = document.getElementById('commentInput');
-            const val = input.value.trim();
-            if (val !== "") {
-                const { error } = await _supabase.from('komentar_wd').insert([{ pesan: val }]);
-                if (!error) input.value = "";
-            }
-        }
-
-        // Realtime Listener
-        _supabase.channel('public:komentar_wd')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'komentar_wd' },
-                payload => {
-                    showOverlay(payload.new.pesan);
-                    localComments.push(payload.new.pesan);
-                })
-            .subscribe();
-
-        // Loop Chat yang sudah ada secara terus menerus
-        async function initApp() {
-            const { data } = await _supabase.from('komentar_wd').select('pesan').order('created_at', { ascending: false }).limit(30);
-
-            if (data && data.length > 0) {
-                localComments = data.map(d => d.pesan);
-
-                // Mulai looping tiap 4.5 detik
-                let i = 0;
-                setInterval(() => {
-                    if (localComments.length > 0) {
-                        showOverlay(localComments[i % localComments.length]);
-                        i++;
-                    }
-                }, 4500);
-            }
-        }
-
-        initApp();
     </script>
 </body>
-
 </html>
