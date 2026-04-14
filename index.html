@@ -3,172 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebDev Overlay Sync | Premium Edition</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>WebDev Overlay Sync | Monitoring Mode</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
-        
-        :root {
-            --brand-yellow: #facc15;
-            --bg-black: #0a0a0a;
-        }
-
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: var(--bg-black);
-            color: #ffffff;
-        }
-
-        .yellow-glow {
-            box-shadow: 0 0 20px rgba(250, 204, 21, 0.2);
-        }
-
-        .yellow-border {
-            border-left: 4px solid var(--brand-yellow);
-        }
-
-        /* Animasi Chat Masuk */
-        .chat-entry {
-            animation: slideIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #1a1a1a; }
-        ::-webkit-scrollbar-thumb { background: var(--brand-yellow); border-radius: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap');
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #0a0a0a; color: white; }
+        .chat-entry { animation: slideIn 0.3s ease-out forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .yellow-glow { box-shadow: 0 0 15px rgba(250, 204, 21, 0.15); }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="p-6">
 
-    <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto border-b border-white/5">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-yellow-400 rounded-sm transform rotate-45 flex items-center justify-center">
-                <i class="fas fa-terminal text-black -rotate-45 text-sm"></i>
+    <div class="max-w-xl mx-auto">
+        <div class="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+            <div class="w-10 h-10 bg-yellow-400 rounded flex items-center justify-center shadow-lg shadow-yellow-400/20">
+                <span class="text-black font-black text-xl">W</span>
             </div>
-            <span class="text-2xl font-bold tracking-tighter">WEBDEV TIKTOK OVERLAY CHAT<span class="text-yellow-400">SYNC</span></span>
-        </div>
-        <div class="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest">
-            <a href="#demo" class="hover:text-yellow-400 transition">Live Demo</a>
-            <a href="#download" class="bg-yellow-400 text-black px-6 py-2 rounded-sm hover:bg-white transition">Download</a>
-        </div>
-    </nav>
-
-    <section class="pt-24 pb-12 px-6">
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
             <div>
-                <h1 class="text-6xl md:text-8xl font-bold leading-none mb-6">
-                    DOMINATE <br><span class="text-yellow-400">THE STREAM.</span>
-                </h1>
-                <p class="text-gray-400 text-xl mb-10 max-w-lg border-l-2 border-yellow-400/30 pl-6">
-                    Overlay chat paling responsif dengan integrasi Supabase. Ringan, transparan, dan sepenuhnya dapat disesuaikan.
-                </p>
-                <div class="flex gap-4">
-                    <a href="#download" class="bg-yellow-400 text-black px-10 py-4 font-black text-lg yellow-glow hover:scale-105 transition">
-                        GET V1.4.0
-                    </a>
-                </div>
-            </div>
-
-            <div id="demo" class="bg-[#111] p-6 rounded-xl border border-white/10 yellow-glow">
-                <div class="flex items-center justify-between mb-4 border-b border-white/5 pb-4">
-                    <span class="text-xs font-bold uppercase tracking-widest text-yellow-400">Supabase Live Preview</span>
-                    <span class="flex h-2 w-2 rounded-full bg-green-500"></span>
-                </div>
-                
-                <div id="chat-container" class="h-[300px] overflow-y-auto space-y-4 pr-2">
-                    <div class="chat-entry bg-white/5 p-3 rounded-lg border-l-2 border-yellow-400">
-                        <span class="text-yellow-400 font-bold">System:</span>
-                        <span class="text-gray-300">Menunggu data dari Supabase...</span>
-                    </div>
-                </div>
-
-                <div class="mt-4 flex gap-2">
-                    <input type="text" id="mock-msg" placeholder="Test pesan..." class="flex-1 bg-black border border-white/10 p-2 rounded text-sm focus:outline-none focus:border-yellow-400">
-                    <button onclick="addManualChat()" class="bg-yellow-400 text-black px-4 py-2 font-bold text-xs uppercase">Send</button>
-                </div>
+                <h1 class="text-xl font-bold tracking-tighter text-yellow-400 uppercase">WebDev Overlay</h1>
+                <p id="status-koneksi" class="text-[10px] text-gray-500 uppercase tracking-widest">Mencoba Menghubungkan...</p>
             </div>
         </div>
-    </section>
 
-    <section id="download" class="py-24 bg-yellow-400 text-black">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h2 class="text-4xl font-black mb-4 italic">READY TO DEPLOY?</h2>
-            <p class="font-bold mb-10 uppercase tracking-tighter">WebDev Stream Sync - v1.4.0 "The Monitoring Era"</p>
-            <div class="flex flex-wrap justify-center gap-10">
-                <div class="text-left">
-                    <h3 class="text-xl font-black mb-2 border-b-2 border-black">NEW FEATURES</h3>
-                    <ul class="font-medium">
-                        <li><i class="fas fa-check"></i> Monitoring Real-time Dashboard</li>
-                        <li><i class="fas fa-check"></i> Supabase Database Sync</li>
-                        <li><i class="fas fa-check"></i> Ultra-Low CPU Usage</li>
-                    </ul>
-                </div>
-                <button class="bg-black text-white px-16 py-8 text-3xl font-black hover:bg-white hover:text-black transition-all">
-                    DOWNLOAD .EXE
-                </button>
+        <div id="chat-container" class="bg-[#111] p-4 rounded-xl border border-white/5 h-[450px] overflow-y-auto space-y-3 yellow-glow">
+            <div class="text-center py-20 text-gray-600 animate-pulse">
+                <i class="fas fa-spinner fa-spin mb-2"></i><br>
+                Menghubungkan ke Supabase...
             </div>
         </div>
-    </section>
 
-    <footer class="p-10 text-center text-gray-600 text-sm font-bold uppercase tracking-widest">
-        &copy; 2026 WebDev Project // High Performance Media Tool
-    </footer>
+        <p class="mt-4 text-[10px] text-center text-gray-600 uppercase tracking-widest">
+            Project: sbbcxsowhcospqfhxhmp // Table: komentar_wd
+        </p>
+    </div>
 
     <script>
-    const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
-
-    // Inisialisasi yang lebih kuat
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // CEK KONEKSI LANGSUNG (Buka Inspect Element / Console di Browser)
-    async function checkConnection() {
-        console.log("Mencoba koneksi ke:", SUPABASE_URL);
-        const { data, error } = await supabase.from('komentar_wd').select('count');
+        // 2. KONFIGURASI (Sesuai Data Kamu)
+        const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
         
-        if (error) {
-            console.error("Koneksi Gagal/URL Salah:", error.message);
-            alert("Koneksi Gagal: " + error.message);
-        } else {
-            console.log("✅ Koneksi Sukses! Data terdeteksi.");
-            loadInitialData();
+        // Inisialisasi
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const container = document.getElementById('chat-container');
+        const statusText = document.getElementById('status-koneksi');
+
+        // Fungsi Menampilkan Chat
+        function showChat(user, msg) {
+            const div = document.createElement('div');
+            div.className = 'chat-entry bg-white/[0.03] p-3 rounded-lg border-l-2 border-yellow-400';
+            div.innerHTML = `
+                <div class="text-yellow-400 font-bold text-[10px] uppercase tracking-tighter">${user}</div>
+                <div class="text-gray-200 text-sm mt-1">${msg}</div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
         }
-    }
 
-    async function loadInitialData() {
-        const { data, error } = await supabase
-            .from('komentar_wd')
-            .select('*')
-            .order('id', { ascending: false })
-            .limit(10);
+        // 3. AMBIL DATA AWAL (Yang ada di foto kamu)
+        async function loadData() {
+            try {
+                const { data, error } = await supabase
+                    .from('komentar_wd')
+                    .select('*')
+                    .order('id', { ascending: false })
+                    .limit(10);
 
-        if (data) {
-            const container = document.getElementById('chat-container');
-            container.innerHTML = ''; // Hapus tulisan "Menunggu data"
-            data.reverse().forEach(item => {
-                appendChatMessage(`User #${item.id}`, item.pesan);
-            });
+                if (error) throw error;
+
+                if (data) {
+                    container.innerHTML = ''; // Hapus loader
+                    statusText.innerText = "🟢 Online - Terhubung ke Supabase";
+                    statusText.classList.replace('text-gray-500', 'text-green-500');
+                    
+                    data.reverse().forEach(item => {
+                        showChat(`User #${item.id}`, item.pesan);
+                    });
+                }
+            } catch (err) {
+                console.error("Gagal load data:", err.message);
+                statusText.innerText = "🔴 Offline - Gagal Koneksi";
+                container.innerHTML = `<div class="text-red-500 text-xs p-4">Error: ${err.message}</div>`;
+            }
         }
-    }
 
-    // Panggil pengecekan saat halaman dimuat
-    window.onload = checkConnection;
+        // 4. REALTIME (Listen chat baru tanpa refresh)
+        function enableRealtime() {
+            supabase
+                .channel('room1')
+                .on('postgres_changes', { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'komentar_wd' 
+                }, (payload) => {
+                    console.log('Pesan baru masuk!', payload);
+                    showChat(`User #${payload.new.id}`, payload.new.pesan);
+                })
+                .subscribe();
+        }
 
-    function appendChatMessage(user, message) {
-        const div = document.createElement('div');
-        div.className = 'chat-entry bg-white/5 p-3 rounded-lg border-l-2 border-yellow-400 mb-3';
-        div.innerHTML = `<b class="text-yellow-400">${user}:</b> <span class="text-white">${message}</span>`;
-        document.getElementById('chat-container').appendChild(div);
-    }
-</script>
-
-
+        // Jalankan saat halaman dibuka
+        window.onload = () => {
+            loadData();
+            enableRealtime();
+        };
+    </script>
 </body>
 </html>
