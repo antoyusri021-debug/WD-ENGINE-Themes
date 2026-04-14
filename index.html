@@ -52,7 +52,7 @@
             <div class="w-8 h-8 bg-yellow-400 rounded-sm transform rotate-45 flex items-center justify-center">
                 <i class="fas fa-terminal text-black -rotate-45 text-sm"></i>
             </div>
-            <span class="text-2xl font-bold tracking-tighter">WEBDEV <span class="text-yellow-400">SYNC</span></span>
+            <span class="text-2xl font-bold tracking-tighter">WEBDEV TIKTOK OVERLAY CHAT<span class="text-yellow-400">SYNC</span></span>
         </div>
         <div class="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest">
             <a href="#demo" class="hover:text-yellow-400 transition">Live Demo</a>
@@ -122,57 +122,84 @@
     </footer>
 
     <script>
-        // KONFIGURASI SUPABASE (Ganti dengan punyamu)
-        const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
-        const supabase = netlify = typeof supabase !== 'undefined' ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    // 1. Deklarasi Konfigurasi
+    const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
+    
+    // PERBAIKAN: Cara panggil library Supabase yang benar di browser
+    // Kita cek apakah library sudah dimuat, lalu inisialisasi langsung.
+    let supabase;
+    try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log("Supabase Connected!");
+    } catch (err) {
+        console.error("Gagal inisialisasi Supabase. Pastikan script CDN sudah terpasang:", err);
+    }
 
-        const chatContainer = document.getElementById('chat-container');
+    const chatContainer = document.getElementById('chat-container');
 
-        // Fungsi Memunculkan Animasi Chat
-        function appendChatMessage(user, message) {
-            const div = document.createElement('div');
-            div.className = 'chat-entry bg-white/5 p-3 rounded-lg border-l-2 border-yellow-400 flex flex-col';
-            div.innerHTML = `
-                <span class="text-yellow-400 font-bold text-xs">${user}</span>
-                <span class="text-gray-200 text-sm">${message}</span>
-            `;
-            chatContainer.appendChild(div);
-            
-            // Auto scroll ke bawah
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+    // Fungsi Memunculkan Animasi Chat
+    function appendChatMessage(user, message) {
+        if (!chatContainer) return;
 
-            // Hapus jika terlalu banyak (optimasi UI)
-            if (chatContainer.children.length > 10) {
-                chatContainer.removeChild(chatContainer.firstChild);
-            }
+        const div = document.createElement('div');
+        // Tambahkan 'mb-3' agar antar chat ada jarak, dan 'chat-entry' untuk animasi CSS-mu
+        div.className = 'chat-entry bg-white/5 p-3 rounded-lg border-l-2 border-yellow-400 flex flex-col mb-3 transition-all';
+        div.innerHTML = `
+            <span class="text-yellow-400 font-bold text-xs">${user}</span>
+            <span class="text-gray-200 text-sm">${message}</span>
+        `;
+        chatContainer.appendChild(div);
+        
+        // Auto scroll ke bawah
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        // Optimasi UI agar tidak lag jika chat ribuan
+        if (chatContainer.children.length > 15) {
+            chatContainer.removeChild(chatContainer.firstChild);
         }
+    }
 
-        // 1. Simulasi Manual
-        function addManualChat() {
-            const input = document.getElementById('mock-msg');
-            if(input.value) {
-                appendChatMessage('You', input.value);
-                input.value = '';
-            }
+    // 1. Fungsi Simulasi Manual
+    function addManualChat() {
+        const input = document.getElementById('mock-msg');
+        if(input && input.value) {
+            appendChatMessage('Local Test', input.value);
+            input.value = '';
         }
+    }
 
-        // 2. Real-time Listen dari Supabase (Jika URL sudah diisi)
-        if (supabase) {
-            supabase
-                .channel('public:chats')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chats' }, payload => {
-                    appendChatMessage(payload.new.username, payload.new.message);
-                })
-                .subscribe();
-        }
+    // 2. Real-time Listen dari Supabase
+    if (supabase) {
+        supabase
+            .channel('any_channel_name') // Nama channel bebas
+            .on(
+                'postgres_changes', 
+                { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'chats' // PASTIKAN nama tabel di Supabase-mu adalah 'chats'
+                }, 
+                (payload) => {
+                    console.log('Data masuk:', payload);
+                    // Pastikan nama kolom di tabelmu adalah 'username' dan 'message'
+                    appendChatMessage(payload.new.username || 'Anonymous', payload.new.message || 'No Message');
+                }
+            )
+            .subscribe((status) => {
+                console.log("Status subscription:", status);
+            });
+    }
 
-        // Simulasi chat masuk tiap 5 detik untuk demo visual
-        const demoMessages = ["Bang tutor setting OBS!", "Overlay-nya cakep bro", "Gacor kang!", "WebDev Stream Sync V1.4 mantap"];
-        setInterval(() => {
-            const randomMsg = demoMessages[Math.floor(Math.random() * demoMessages.length)];
-            appendChatMessage('Viewer_' + Math.floor(Math.random()*100), randomMsg);
-        }, 5000);
-    </script>
+    // Simulasi Demo (Bisa kamu hapus jika sudah benar-benar konek)
+    // Saya matikan agar kamu bisa lihat data asli dari Supabase saja
+    /*
+    const demoMessages = ["System: Menunggu data...", "Supabase Realtime Aktif"];
+    demoMessages.forEach((m, i) => {
+        setTimeout(() => appendChatMessage("System", m), i * 1000);
+    });
+    */
+</script>
+
 </body>
 </html>
