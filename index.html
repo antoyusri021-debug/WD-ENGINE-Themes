@@ -122,83 +122,61 @@
     </footer>
 
     <script>
-    // 1. Deklarasi Konfigurasi
+    // 1. Konfigurasi (Sudah sesuai dengan project sbbcxs...)
     const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
     
-    // PERBAIKAN: Cara panggil library Supabase yang benar di browser
-    // Kita cek apakah library sudah dimuat, lalu inisialisasi langsung.
-    let supabase;
-    try {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        console.log("Supabase Connected!");
-    } catch (err) {
-        console.error("Gagal inisialisasi Supabase. Pastikan script CDN sudah terpasang:", err);
-    }
-
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const chatContainer = document.getElementById('chat-container');
 
-    // Fungsi Memunculkan Animasi Chat
+    // Fungsi UI
     function appendChatMessage(user, message) {
-        if (!chatContainer) return;
-
         const div = document.createElement('div');
-        // Tambahkan 'mb-3' agar antar chat ada jarak, dan 'chat-entry' untuk animasi CSS-mu
-        div.className = 'chat-entry bg-white/5 p-3 rounded-lg border-l-2 border-yellow-400 flex flex-col mb-3 transition-all';
+        div.className = 'chat-entry bg-white/5 p-3 rounded-lg border-l-2 border-yellow-400 flex flex-col mb-3';
         div.innerHTML = `
             <span class="text-yellow-400 font-bold text-xs">${user}</span>
             <span class="text-gray-200 text-sm">${message}</span>
         `;
         chatContainer.appendChild(div);
-        
-        // Auto scroll ke bawah
         chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        // Optimasi UI agar tidak lag jika chat ribuan
-        if (chatContainer.children.length > 15) {
-            chatContainer.removeChild(chatContainer.firstChild);
-        }
     }
 
-    // 1. Fungsi Simulasi Manual
-    function addManualChat() {
-        const input = document.getElementById('mock-msg');
-        if(input && input.value) {
-            appendChatMessage('Local Test', input.value);
-            input.value = '';
-        }
-    }
+    // 2. Ambil data yang sudah ada (Load Existing Data)
+    async function loadInitialData() {
+        const { data, error } = await supabase
+            .from('komentar_wd') // Sesuai nama tabel di foto
+            .select('*')
+            .order('id', { ascending: false })
+            .limit(10);
 
-    // 2. Real-time Listen dari Supabase
-    if (supabase) {
-        supabase
-            .channel('any_channel_name') // Nama channel bebas
-            .on(
-                'postgres_changes', 
-                { 
-                    event: 'INSERT', 
-                    schema: 'public', 
-                    table: 'komentar_wd' // PASTIKAN nama tabel di Supabase-mu adalah 'chats'
-                }, 
-                (payload) => {
-                    console.log('Data masuk:', payload);
-                    // Pastikan nama kolom di tabelmu adalah 'username' dan 'message'
-                    appendChatMessage(payload.new.username || 'Anonymous', payload.new.message || 'No Message');
-                }
-            )
-            .subscribe((status) => {
-                console.log("Status subscription:", status);
+        if (data) {
+            // Kita balik urutannya agar yang terbaru di bawah
+            data.reverse().forEach(item => {
+                appendChatMessage(`User #${item.id}`, item.pesan); // Menggunakan kolom 'pesan'
             });
+        }
     }
 
-    // Simulasi Demo (Bisa kamu hapus jika sudah benar-benar konek)
-    // Saya matikan agar kamu bisa lihat data asli dari Supabase saja
-    /*
-    const demoMessages = ["System: Menunggu data...", "Supabase Realtime Aktif"];
-    demoMessages.forEach((m, i) => {
-        setTimeout(() => appendChatMessage("System", m), i * 1000);
-    });
-    */
+    // 3. Listen Real-time (Untuk chat baru tanpa refresh)
+    const channel = supabase
+        .channel('realtime:komentar_wd')
+        .on(
+            'postgres_changes', 
+            { 
+                event: 'INSERT', 
+                schema: 'public', 
+                table: 'komentar_wd' // Sesuai nama tabel di foto
+            }, 
+            (payload) => {
+                console.log('Ada pesan masuk!', payload);
+                // Kita ambil kolom 'pesan' dari payload
+                appendChatMessage(`User #${payload.new.id}`, payload.new.pesan);
+            }
+        )
+        .subscribe();
+
+    // Jalankan load data saat halaman dibuka
+    loadInitialData();
 </script>
 
 </body>
