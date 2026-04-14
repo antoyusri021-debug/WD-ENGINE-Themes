@@ -3,114 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebDev Overlay Sync | Monitoring Mode</title>
+    <title>WebDev Overlay | Premium Monitoring</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap');
-        body { font-family: 'Space Grotesk', sans-serif; background-color: #0a0a0a; color: white; }
-        .chat-entry { animation: slideIn 0.3s ease-out forwards; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        .yellow-glow { box-shadow: 0 0 15px rgba(250, 204, 21, 0.15); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
+        :root {
+            --brand-yellow: #f1c40f;
+            --bg-dark: #0b0d0f;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.02) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .glass-card {
+            background: rgba(20, 22, 25, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Animasi Chat Muncul */
+        .chat-bubble {
+            animation: slideIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            border-left: 3px solid var(--brand-yellow);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .yellow-glow {
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+        }
+        
+        /* Scrollbar Halus */
+        #chat-container::-webkit-scrollbar { width: 4px; }
+        #chat-container::-webkit-scrollbar-thumb { background: var(--brand-yellow); border-radius: 10px; }
     </style>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-10">
 
-    <div class="max-w-xl mx-auto">
-        <div class="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
-            <div class="w-10 h-10 bg-yellow-400 rounded flex items-center justify-center shadow-lg shadow-yellow-400/20">
-                <span class="text-black font-black text-xl">W</span>
+    <div class="max-w-2xl mx-auto">
+        <div class="flex items-center justify-between mb-10 border-b border-white/5 pb-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(241,196,15,0.3)]">
+                    <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tighter uppercase">WebDev <span class="text-yellow-400">Sync</span></h1>
+                    <div class="flex items-center gap-2">
+                        <span id="status-dot" class="w-2 h-2 rounded-full bg-gray-500 animate-pulse"></span>
+                        <p id="status-text" class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em]">Menghubungkan Database...</p>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h1 class="text-xl font-bold tracking-tighter text-yellow-400 uppercase">WebDev Overlay</h1>
-                <p id="status-koneksi" class="text-[10px] text-gray-500 uppercase tracking-widest">Mencoba Menghubungkan...</p>
+            <div class="text-right hidden sm:block">
+                <span class="text-[10px] text-gray-600 block uppercase font-bold">Server Version</span>
+                <span class="text-xs font-bold text-white">v1.4.0-PRO</span>
             </div>
         </div>
 
-        <div id="chat-container" class="bg-[#111] p-4 rounded-xl border border-white/5 h-[450px] overflow-y-auto space-y-3 yellow-glow">
-            <div class="text-center py-20 text-gray-600 animate-pulse">
-                <i class="fas fa-spinner fa-spin mb-2"></i><br>
-                Menghubungkan ke Supabase...
+        <div class="glass-card rounded-[2rem] p-6 mb-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+
+            <h2 class="text-sm font-bold text-yellow-400 mb-4 flex items-center gap-2 uppercase tracking-widest">
+                <span class="flex h-2 w-2 rounded-full bg-yellow-400"></span>
+                Live Comment Stream
+            </h2>
+
+            <div id="chat-container" class="h-[400px] overflow-y-auto space-y-4 pr-2">
+                <div id="loader" class="h-full flex flex-col items-center justify-center text-gray-600 italic text-sm">
+                    <div class="w-8 h-8 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin mb-3"></div>
+                    Sinkronisasi Data Supabase...
+                </div>
             </div>
         </div>
 
-        <p class="mt-4 text-[10px] text-center text-gray-600 uppercase tracking-widest">
-            Project: sbbcxsowhcospqfhxhmp // Table: komentar_wd
-        </p>
+        <div class="glass-card rounded-2xl p-2 flex gap-2 border-white/10">
+            <input type="text" id="commentInput" placeholder="Ketik pesan monitoring..." class="bg-transparent flex-1 px-4 py-3 outline-none text-sm font-medium">
+            <button onclick="addComment()" class="bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold text-sm hover:scale-95 transition-all active:bg-white uppercase">
+                Kirim
+            </button>
+        </div>
     </div>
 
     <script>
-        // 2. KONFIGURASI (Sesuai Data Kamu)
         const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
-        
-        // Inisialisasi
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const container = document.getElementById('chat-container');
-        const statusText = document.getElementById('status-koneksi');
+        const statusText = document.getElementById('status-text');
+        const statusDot = document.getElementById('status-dot');
+        let localComments = [];
 
-        // Fungsi Menampilkan Chat
-        function showChat(user, msg) {
-            const div = document.createElement('div');
-            div.className = 'chat-entry bg-white/[0.03] p-3 rounded-lg border-l-2 border-yellow-400';
-            div.innerHTML = `
-                <div class="text-yellow-400 font-bold text-[10px] uppercase tracking-tighter">${user}</div>
-                <div class="text-gray-200 text-sm mt-1">${msg}</div>
+        function renderBubble(text, isNew = false) {
+            const loader = document.getElementById('loader');
+            if(loader) loader.remove();
+
+            const bubble = document.createElement('div');
+            // Desain bubble yang lebih premium
+            bubble.className = `chat-bubble p-4 bg-white/[0.03] rounded-xl flex flex-col gap-1 ${isNew ? 'border-yellow-400' : 'border-white/5'}`;
+            bubble.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-black text-yellow-400 uppercase tracking-tighter">System Monitor</span>
+                    <span class="text-[8px] text-gray-600 font-bold">${new Date().toLocaleTimeString()}</span>
+                </div>
+                <p class="text-sm text-gray-200 font-medium">${text}</p>
             `;
-            container.appendChild(div);
+
+            container.appendChild(bubble);
             container.scrollTop = container.scrollHeight;
-        }
 
-        // 3. AMBIL DATA AWAL (Yang ada di foto kamu)
-        async function loadData() {
-            try {
-                const { data, error } = await supabase
-                    .from('komentar_wd')
-                    .select('*')
-                    .order('id', { ascending: false })
-                    .limit(10);
-
-                if (error) throw error;
-
-                if (data) {
-                    container.innerHTML = ''; // Hapus loader
-                    statusText.innerText = "🟢 Online - Terhubung ke Supabase";
-                    statusText.classList.replace('text-gray-500', 'text-green-500');
-                    
-                    data.reverse().forEach(item => {
-                        showChat(`User #${item.id}`, item.pesan);
-                    });
-                }
-            } catch (err) {
-                console.error("Gagal load data:", err.message);
-                statusText.innerText = "🔴 Offline - Gagal Koneksi";
-                container.innerHTML = `<div class="text-red-500 text-xs p-4">Error: ${err.message}</div>`;
+            // Batasi agar tidak terlalu berat
+            if (container.children.length > 20) {
+                container.removeChild(container.firstChild);
             }
         }
 
-        // 4. REALTIME (Listen chat baru tanpa refresh)
-        function enableRealtime() {
-            supabase
-                .channel('room1')
-                .on('postgres_changes', { 
-                    event: 'INSERT', 
-                    schema: 'public', 
-                    table: 'komentar_wd' 
-                }, (payload) => {
-                    console.log('Pesan baru masuk!', payload);
-                    showChat(`User #${payload.new.id}`, payload.new.pesan);
-                })
-                .subscribe();
+        async function addComment() {
+            const input = document.getElementById('commentInput');
+            const val = input.value.trim();
+            if (val !== "") {
+                const { error } = await _supabase.from('komentar_wd').insert([{ pesan: val }]);
+                if (!error) input.value = "";
+            }
         }
 
-        // Jalankan saat halaman dibuka
-        window.onload = () => {
-            loadData();
-            enableRealtime();
-        };
+        // 1. Realtime Listener (Ambil data baru secara langsung)
+        _supabase.channel('public:komentar_wd')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'komentar_wd' },
+                payload => {
+                    renderBubble(payload.new.pesan, true);
+                    localComments.push(payload.new.pesan);
+                })
+            .subscribe((status) => {
+                if(status === "SUBSCRIBED") {
+                    statusText.innerText = "🟢 System Online - Realtime Active";
+                    statusDot.classList.replace('bg-gray-500', 'bg-green-500');
+                }
+            });
+
+        // 2. Init & Looping Data (Agar tampilan tidak kosong)
+        async function initApp() {
+            const { data, error } = await _supabase
+                .from('komentar_wd')
+                .select('pesan')
+                .order('id', { ascending: false })
+                .limit(10);
+
+            if (data && data.length > 0) {
+                localComments = data.map(d => d.pesan);
+                // Tampilkan 5 data terakhir dulu
+                data.reverse().slice(-5).forEach(d => renderBubble(d.pesan));
+
+                // Mulai looping data lama tiap 6 detik jika tidak ada chat baru
+                let i = 0;
+                setInterval(() => {
+                    if (localComments.length > 0) {
+                        // Hanya looping kalau user tidak sedang scroll ke atas
+                        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+                            renderBubble("[History] " + localComments[i % localComments.length]);
+                            i++;
+                        }
+                    }
+                }, 6000);
+            } else if (error) {
+                statusText.innerText = "🔴 Connection Error";
+                console.error(error);
+            }
+        }
+
+        initApp();
     </script>
 </body>
 </html>
