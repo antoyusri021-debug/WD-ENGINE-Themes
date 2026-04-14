@@ -122,17 +122,31 @@
     </footer>
 
     <script>
-    // 1. Konfigurasi (Sudah sesuai dengan project sbbcxs...)
+    // 1. Konfigurasi
     const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
     
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let supabase;
+
+    // Fungsi Inisialisasi Aman
+    function initSupabase() {
+        if (window.supabase) {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log("✅ Supabase Library Loaded");
+            loadInitialData();
+            listenRealtime();
+        } else {
+            console.error("❌ Library Supabase tidak ditemukan! Pastikan CDN sudah terpasang.");
+            document.getElementById('chat-container').innerHTML = '<div class="text-red-500 p-4">Gagal memuat Library Supabase. Cek Koneksi Internet.</div>';
+        }
+    }
+
     const chatContainer = document.getElementById('chat-container');
 
-    // Fungsi UI
     function appendChatMessage(user, message) {
+        if (!chatContainer) return;
         const div = document.createElement('div');
-        div.className = 'chat-entry bg-white/5 p-3 rounded-lg border-l-2 border-yellow-400 flex flex-col mb-3';
+        div.className = 'chat-entry bg-white/5 p-3 rounded-lg border-l-2 border-yellow-400 flex flex-col mb-3 animate-fade-in';
         div.innerHTML = `
             <span class="text-yellow-400 font-bold text-xs">${user}</span>
             <span class="text-gray-200 text-sm">${message}</span>
@@ -141,43 +155,52 @@
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // 2. Ambil data yang sudah ada (Load Existing Data)
+    // Ambil data yang sudah ada di tabel (Isi dari screenshot kamu)
     async function loadInitialData() {
+        console.log("⏳ Mengambil data awal...");
         const { data, error } = await supabase
-            .from('komentar_wd') // Sesuai nama tabel di foto
+            .from('komentar_wd')
             .select('*')
             .order('id', { ascending: false })
             .limit(10);
 
-        if (data) {
-            // Kita balik urutannya agar yang terbaru di bawah
+        if (error) {
+            console.error("❌ Error Load Data:", error.message);
+            return;
+        }
+
+        if (data && data.length > 0) {
+            chatContainer.innerHTML = ''; // Hapus tulisan "Menunggu data"
             data.reverse().forEach(item => {
-                appendChatMessage(`User #${item.id}`, item.pesan); // Menggunakan kolom 'pesan'
+                appendChatMessage(`User #${item.id}`, item.pesan);
             });
+            console.log("✅ Data awal berhasil dimuat");
+        } else {
+            chatContainer.innerHTML = '<div class="text-gray-500 p-4">Tabel kosong atau tidak ada data.</div>';
         }
     }
 
-    // 3. Listen Real-time (Untuk chat baru tanpa refresh)
-    const channel = supabase
-        .channel('realtime:komentar_wd')
-        .on(
-            'postgres_changes', 
-            { 
-                event: 'INSERT', 
-                schema: 'public', 
-                table: 'komentar_wd' // Sesuai nama tabel di foto
-            }, 
-            (payload) => {
-                console.log('Ada pesan masuk!', payload);
-                // Kita ambil kolom 'pesan' dari payload
-                appendChatMessage(`User #${payload.new.id}`, payload.new.pesan);
-            }
-        )
-        .subscribe();
+    // Fungsi Realtime
+    function listenRealtime() {
+        const channel = supabase
+            .channel('realtime_komentar')
+            .on(
+                'postgres_changes', 
+                { event: 'INSERT', schema: 'public', table: 'komentar_wd' }, 
+                (payload) => {
+                    console.log('🔔 Pesan Baru Masuk:', payload.new);
+                    appendChatMessage(`User #${payload.new.id}`, payload.new.pesan);
+                }
+            )
+            .subscribe((status) => {
+                console.log("📡 Status Realtime:", status);
+            });
+    }
 
-    // Jalankan load data saat halaman dibuka
-    loadInitialData();
+    // Jalankan saat library siap
+    window.onload = initSupabase;
 </script>
+
 
 </body>
 </html>
