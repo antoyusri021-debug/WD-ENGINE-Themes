@@ -418,7 +418,7 @@
             <h3>Absen dulu brow!</h3>
             <p>Ketik pesan di sini.</p>
             <div class="input-group">
-                <input type="text" id="commentInput" placeholder="Contoh: 'WDTiktok Engine emang Gacor!'">
+                <input type="text" id="commentInput" placeholder="Contoh: 'WebDev emang Gacor!'">
                 <button id="sendBtn" class="btn-send" onclick="addComment()">KIRIM</button>
             </div>
         </div>
@@ -437,7 +437,7 @@
             const container = document.getElementById('overlay-container');
 
             // Aturan Maksimal 6 Komentar di Layar
-            if (container.children.length >= 6) {
+            if (container.children.length >= 15) {
                 const oldest = container.lastElementChild;
                 oldest.classList.add('fade-out');
                 setTimeout(() => oldest.remove(), 800);
