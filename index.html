@@ -4,789 +4,1091 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WDTiktok Engine - Professional Streaming Solution</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+    <title>Webdev Overlay Stream | Aplikasi Overlay Live Streaming</title>
+    <meta name="description" content="Webdev Overlay Stream adalah aplikasi desktop untuk mengelola overlay live streaming, event interaktif, musik, dan integrasi OBS Studio dalam satu aplikasi.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Webdev Overlay Stream">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Webdev Overlay Stream | Aplikasi Overlay Live Streaming">
+    <meta property="og:description" content="Kelola overlay, event interaktif, musik, dan live streaming dengan Webdev Overlay Stream.">
+    <meta property="og:site_name" content="Webdev Overlay Stream">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Webdev Overlay Stream | Aplikasi Overlay Live Streaming">
+    <meta name="twitter:description" content="Aplikasi desktop untuk membantu streamer mengelola overlay dan live streaming.">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Webdev Overlay Stream",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Windows, macOS",
+        "description": "Aplikasi desktop untuk mengelola overlay live streaming, event interaktif, musik, dan integrasi OBS Studio."
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0b0d14;
-            --card-bg: rgba(25, 27, 38, 0.6);
-            --input-bg: rgba(11, 13, 20, 0.8);
-            --border-color: rgba(255, 255, 255, 0.08);
-
-            --neon-purple-gradient: linear-gradient(90deg, #6366f1 0%, #d946ef 100%);
-            --neon-orange-gradient: linear-gradient(90deg, #f59e0b 0%, #ec4899 100%);
-            --text-gradient: linear-gradient(90deg, #d946ef 0%, #8b5cf6 100%);
-
-            --text-main: #ffffff;
-            --text-dim: #94a3b8;
-
-            --ease: cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 60px 40px;
-
-            background-image:
-                radial-gradient(circle at 85% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 15% 80%, rgba(217, 70, 239, 0.1) 0%, transparent 50%),
-                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 50px 50px, 50px 50px;
         }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: fadeInPage 1s var(--ease) forwards;
-            opacity: 0;
-            position: relative;
-            z-index: 10;
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
 
-        @keyframes fadeInPage {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-        }
-
-        .badge-dev {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(217, 70, 239, 0.05);
-            border: 1px solid rgba(217, 70, 239, 0.2);
-            color: #d946ef;
-            padding: 10px 24px;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 25px;
-            transition: 0.3s;
-            box-shadow: 0 0 15px rgba(217, 70, 239, 0.1);
-            text-decoration: none;
-        }
-
-        .badge-dev:hover {
-            border-color: rgba(217, 70, 239, 0.5);
-            background: rgba(217, 70, 239, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .badge-dev svg {
-            width: 20px;
-        }
-
-        h1 {
-            font-size: 4.8rem;
-            margin: 0;
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -2px;
-        }
-
-        h1 span {
-            background: var(--text-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-desc {
-            color: var(--text-dim);
-            font-size: 1.3rem;
-            margin: 20px auto 45px;
-            max-width: 700px;
-            line-height: 1.6;
-        }
-
-        /* GRID HERO: MENGGABUNGKAN GAMBAR & DOWNLOAD CENTER BERSAMPINGAN */
-        .hero-split-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            width: 100%;
-            margin-bottom: 24px;
-            align-items: stretch;
-            /* Memaksa kolom kiri dan kanan tingginya sama rata */
-        }
-
-        @media (min-width: 1024px) {
-            .hero-split-grid {
-                grid-template-columns: 1.3fr 1fr;
-                /* Proporsi kiri sedikit lebih lebar dari kanan */
-            }
-        }
-
-        /* FRAME GAMBAR */
-        .showcase-banner {
-            width: 100%;
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            background: var(--card-bg);
-            padding: 16px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: 0.5s var(--ease);
-        }
-
-        .showcase-banner:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-4px);
-        }
-
-        .showcase-banner img {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: contain;
-            border-radius: 14px;
-        }
-
-        /* MODIFIKASI CARD UTAMA BIAR NGE-BLEND DAN PRESISI */
-        .main-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            width: 100%;
-            transition: 0.5s var(--ease);
-            text-align: left;
-            margin-bottom: 24px;
-        }
-
-        /* Khusus download card di dalam grid agar tingginya sinkron tanpa margin luar ekstra */
-        .hero-split-grid .main-card {
-            margin-bottom: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            /* Tombol & Teks berada pas di tengah tinggi gambar */
-        }
-
-        .main-card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-4px);
-        }
-
-        .main-card h2 {
-            font-size: 2.1rem;
-            font-weight: 700;
-            margin: 0 0 12px 0;
-            letter-spacing: -1px;
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 30px;
-            width: 100%;
-        }
-
-        .btn-base {
-            text-decoration: none;
-            padding: 18px 24px;
-            width: 100%;
-            font-weight: 700;
-            font-size: 0.95rem;
-            border-radius: 14px;
-            transition: 0.4s var(--ease);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-            border: none;
-            color: #ffffff;
-        }
-
-        .btn-inner {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-premium {
-            background: var(--neon-purple-gradient);
-            box-shadow: 0 10px 25px rgba(217, 70, 239, 0.3);
-        }
-
-        .btn-standard {
-            background: var(--neon-orange-gradient);
-            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
-        }
-
-        .btn-base:hover {
-            transform: translateY(-4px) scale(1.02);
-            filter: brightness(1.1);
-        }
-
-        .btn-base svg {
-            width: 20px;
-            transition: 0.3s var(--ease);
-        }
-
-        .btn-base:hover .arrow-icon {
-            transform: translateX(6px);
-        }
-
-        /* STYLING TABEL PRICING UPDATE */
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 30px;
-            background: rgba(11, 13, 20, 0.5);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th,
-        td {
-            padding: 20px 24px;
-            color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem;
-            vertical-align: middle;
-        }
-
-        th {
-            font-weight: 700;
-            color: #d946ef;
-            background: rgba(255, 255, 255, 0.03);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 0.85rem;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr {
-            transition: 0.3s var(--ease);
-        }
-
-        tbody tr:hover {
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        td:first-child {
-            font-weight: 700;
-            color: #e2e8f0;
-            white-space: nowrap;
-        }
-
-        td:nth-child(2) {
-            color: #cbd5e1;
-            white-space: nowrap;
-        }
-
-        td:nth-child(3) {
-            font-weight: 800;
-            color: #f59e0b;
-            font-size: 1.05rem;
-            white-space: nowrap;
-        }
-
-        .badge-strategi {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            color: #a78bfa;
-            line-height: 1.4;
-        }
-
-        .btn-buy-wa {
-            display: inline-block;
-            padding: 10px 20px;
-            background: var(--text-gradient);
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.85rem;
-            border-radius: 8px;
-            transition: 0.3s var(--ease);
-            white-space: nowrap;
-            box-shadow: 0 4px 15px rgba(217, 70, 239, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-        }
-
-        .btn-buy-wa:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.15);
-            box-shadow: 0 6px 20px rgba(217, 70, 239, 0.4);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .comment-section {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid var(--border-color);
-            text-align: left;
-            width: 100%;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .comment-section h3 {
-            margin: 0 0 8px 0;
-            color: #ffffff;
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .comment-section p {
-            margin: 0;
-            color: var(--text-dim);
-            font-size: 1rem;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            width: 100%;
-        }
-
-        input {
-            flex: 1;
-            background: var(--input-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 18px 24px;
-            color: white;
-            font-family: inherit;
-            font-size: 1rem;
-            border-radius: 14px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            border-color: #d946ef;
-            box-shadow: 0 0 15px rgba(217, 70, 239, 0.2);
-            background: rgba(11, 13, 20, 0.9);
-        }
-
-        .btn-send {
-            background: var(--text-gradient);
-            color: #ffffff;
-            border: none;
-            padding: 0 45px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(217, 70, 239, 0.3);
-        }
-
-        .btn-send:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.15);
-        }
-
-        @media (max-width: 1023px) {
-            body {
-                padding: 30px 15px;
-            }
-
-            h1 {
-                font-size: 2.8rem;
-            }
-
-            .main-card {
-                padding: 25px;
-            }
-
-            .input-group {
-                flex-direction: column;
-            }
-
-            .btn-send {
-                padding: 18px 0;
-                width: 100%;
-            }
-        }
-
-        /* OVERLAY CHAT */
-        #overlay-container {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            width: 350px;
-            display: flex;
-            flex-direction: column-reverse;
-            gap: 15px;
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        .chat-bubble {
-            background: rgba(20, 22, 25, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(217, 70, 239, 0.3);
-            border-left: 4px solid #d946ef;
-            padding: 14px 24px;
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: bubbleSlideIn 0.5s var(--ease) forwards;
-            max-width: fit-content;
-            align-self: flex-end;
-            will-change: transform, opacity;
-        }
-
-        .chat-bubble strong {
-            color: #d946ef;
-            font-weight: 600;
-        }
-
-        @keyframes bubbleSlideIn {
-            from {
-                transform: translateY(30px) scale(0.9);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
-
-        .fade-out {
-            animation: fadeOutDown 0.6s var(--ease) forwards;
-        }
-
-        @keyframes fadeOutDown {
-            to {
-                opacity: 0;
-                transform: translateY(-10px) scale(0.9);
-            }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
 
-<body>
+<body
+    class="bg-[#0b0813] text-slate-100 min-h-screen relative overflow-x-hidden selection:bg-rose-500 selection:text-white">
 
-    <div id="overlay-container"></div>
-    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+    <div
+        class="fixed top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-rose-600/20 via-purple-600/15 to-transparent rounded-full blur-[140px] pointer-events-none -z-10">
+    </div>
+    <div
+        class="fixed bottom-0 right-10 w-[500px] h-[500px] bg-gradient-to-tr from-indigo-600/20 via-cyan-600/10 to-transparent rounded-full blur-[150px] pointer-events-none -z-10">
+    </div>
 
-    <div class="container">
-        <a href="https://tiktok.com/@webdev_ysi" target="_blank" class="badge-dev">
-            <svg viewBox="0 0 448 512" fill="currentColor">
-                <path
-                    d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25v178.72A162.55 162.55 0 1 1 185 188.31v89.89a74.62 74.62 0 1 0 52.23 71.29V0h88a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14z" />
-            </svg>
-            @WebDev
-        </a>
+    <div class="max-w-7xl mx-auto min-h-screen flex flex-col justify-between p-4 sm:p-6 lg:p-8">
 
-        <h1>WD<span>Tiktok</span> Engine</h1>
-        <p class="hero-desc">Solusi otomatis interaksi Tiktok Live tingkat lanjut untuk kreator & brand profesional.</p>
+        <header class="flex flex-col md:flex-row justify-between items-center gap-4 pb-6 border-b border-white/10 backdrop-blur-lg">
+            <div class="flex items-center space-x-3">
+    <!-- Icon langsung tanpa background wrapper -->
+    <img src="webdev.ico" alt="Logo Webdev Overlay Stream" class="w-10 h-10 object-contain">
 
-        <div class="hero-split-grid">
-            <div class="showcase-banner">
-                <img src="gambar.png" alt="WD TikTok Engine Showcase">
+    <!-- Nama Aplikasi & Subtitle -->
+    <div>
+        <span
+            class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-rose-400 bg-clip-text text-transparent">
+            WebDev<span class="text-rose-500"> Overlay Stream</span>
+        </span>
+        <span class="block text-[10px] text-slate-400 uppercase tracking-widest font-semibold">
+            Desktop Edition
+        </span>
+    </div>
+</div>
+
+            <nav
+                class="flex flex-wrap justify-center gap-1 sm:gap-2 text-xs font-semibold text-slate-300 bg-white/[0.04] p-1.5 rounded-2xl border border-white/10">
+                <button onclick="switchTab('beranda', this)"
+                    class="tab-btn active-tab px-4 py-2 rounded-xl transition text-white bg-rose-500/20 border border-rose-500/40">Beranda</button>
+                <button onclick="switchTab('fitur', this)"
+                    class="tab-btn px-4 py-2 rounded-xl transition hover:text-white hover:bg-white/5">Fitur
+                    Utama</button>
+                <button onclick="switchTab('download', this)"
+                    class="tab-btn px-4 py-2 rounded-xl transition hover:text-white hover:bg-white/5">Download</button>
+                <button onclick="switchTab('harga', this)"
+                    class="tab-btn px-4 py-2 rounded-xl transition hover:text-white hover:bg-white/5">Paket
+                    Harga</button>
+                <button onclick="switchTab('panduan', this)"
+                    class="tab-btn px-4 py-2 rounded-xl transition hover:text-white hover:bg-white/5">Panduan &
+                    Testi</button>
+                <button onclick="switchTab('informasi', this)"
+                    class="tab-btn px-4 py-2 rounded-xl transition hover:text-white hover:bg-white/5">Informasi
+                    App</button>
+            </nav>
+
+            <div class="hidden lg:flex items-center gap-3">
+                <button onclick="switchTab('download', document.querySelectorAll('.tab-btn')[2])"
+                    class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 hover:opacity-90 text-white text-xs font-bold transition shadow-lg shadow-rose-500/20">
+                    Coba Gratis
+                </button>
             </div>
+        </header>
 
-            <div class="main-card">
-                <h2>Download Center</h2>
-                <p style="color: var(--text-dim); font-size: 1.05rem; margin:0; line-height: 1.5;">Pilih edisi yang
-                    sesuai dengan ambisi live streaming kamu.</p>
+        <main class="my-8">
 
-                <div class="button-group"
-                    style="display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 15px; box-sizing: border-box;">
+            <section id="beranda" class="tab-content">
 
-                    <!-- VERSi FREE (Tombol Windows Free) -->
-                    <a href="https://drive.google.com/file/d/135vzwEs_oYOifNaXNmSfUy8bdOu-oLh3/view?usp=sharing"
-                        target="_blank" class="btn-base"
-                        style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; padding: 12px 16px; border-radius: 8px; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; transition: all 0.2s;"
-                        onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.color='#fff';"
-                        onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'; this.style.color='#cbd5e1';">
-                        <div class="btn-inner" style="display: flex; align-items: center; gap: 8px;">
-                            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                <path
-                                    d="M3 4.5l7.5-1v9H3v-8zm8.5-1.1L21 2v10.5h-9.5V3.4zM3 13.5h7.5v9L3 21.5v-8zm8.5 0H21V22l-9.5-1.3v-7.2z" />
-                            </svg>
-                            <span>Windows (FREE)</span>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center mb-10 relative">
+
+                    <!-- SISI KIRI: Widget Overlay (Gift, Follow, Chat Live, Tap Tap Layar) -->
+                    <div class="hidden lg:flex lg:col-span-3 flex-col gap-3">
+                        <!-- Overlay Gift -->
+                        <div
+                            class="flex items-center gap-3 bg-slate-900/90 border border-amber-500/30 p-3 rounded-2xl shadow-lg backdrop-blur-md animate-bounce [animation-duration:3s]">
+                            <div
+                                class="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+                                <i class="fas fa-gift text-base"></i>
+                            </div>
+                            <div class="min-w-0 text-left">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs font-bold text-white truncate">@andi_stream</span>
+                                    <span
+                                        class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-semibold">GIFT</span>
+                                </div>
+                                <p class="text-[11px] text-amber-400 font-medium truncate">Mengirim 5x Paus Terbang 🐳
+                                </p>
+                            </div>
                         </div>
-                        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                            style="width: 14px; height: 14px;">
-                            <path d="M5 12h14m-7-7 7 7-7 7" />
-                        </svg>
-                    </a>
 
-                    <!-- VERSI PRO (Tombol Windows PRO) -->
-                    <a href="https://github.com/antoyusri021-debug/WebDev-Stream-Sync/releases" target="_blank" class="btn-base btn-premium"
-                        style="text-decoration: none; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; padding: 12px 16px; border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 800; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2); transition: all 0.2s;"
-                        onmouseover="this.style.transform='translateY(-2px)'; this.style.opacity='0.95'; this.style.boxShadow='0 6px 15px rgba(251, 191, 36, 0.35)';"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.opacity='1'; this.style.boxShadow='0 4px 12px rgba(251, 191, 36, 0.2)';">
-                        <div class="btn-inner" style="display: flex; align-items: center; gap: 8px;">
-                            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                <path
-                                    d="M3 4.5l7.5-1v9H3v-8zm8.5-1.1L21 2v10.5h-9.5V3.4zM3 13.5h7.5v9L3 21.5v-8zm8.5 0H21V22l-9.5-1.3v-7.2z" />
-                            </svg>
-                            <span style="display: flex; align-items: center; gap: 6px;">
-                                Windows (Versi Pro) <i class="fa-solid fa-crown" style="font-size: 10px;"></i>
-                            </span>
+                        <!-- Overlay Follow -->
+                        <div
+                            class="flex items-center gap-3 bg-slate-900/90 border border-emerald-500/30 p-3 rounded-2xl shadow-lg backdrop-blur-md animate-pulse">
+                            <div
+                                class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                                <i class="fas fa-user-plus text-xs"></i>
+                            </div>
+                            <div class="min-w-0 text-left">
+                                <p class="text-xs font-bold text-white truncate">@sarah_gurl</p>
+                                <p class="text-[10px] text-emerald-400 font-medium">Mulai mengikuti siaran! ✨</p>
+                            </div>
                         </div>
-                        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                            style="width: 14px; height: 14px;">
-                            <path d="M5 12h14m-7-7 7 7-7 7" />
-                        </svg>
-                    </a>
 
-                    <!-- VERSI MACOS (Biarin Tetap Bawaan Lu) -->
-                    <a href="https://drive.google.com/file/d/1YLjjAL280b1VDCT8Sdu_j-rOTVafaXyn/view?usp=drive_link"
-                        target="_blank" class="btn-base btn-standard">
-                        <div class="btn-inner">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M16.4 13.2c0-2.2 1.8-3.2 1.9-3.3-1-1.5-2.6-1.7-3.2-1.8-1.3-.1-2.6.8-3.3.8-.7 0-1.8-.8-2.9-.8-1.5 0-2.9.9-3.7 2.3-1.6 2.8-.4 6.9 1.1 9 .8 1 1.8 2.1 3.1 2 .9 0 1.3-.6 2.5-.6 1.2 0 1.6.6 2.6.6 1.3 0 2.2-1.1 3-2.1.9-1.2 1.3-2.4 1.3-2.5-.1 0-2.4-.9-2.4-3.6zM14.3 6.9c.7-.8 1.1-1.9 1-3-.9.1-2 .6-2.7 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2-.5 2.7-1.3z" />
-                            </svg>
-                            <span>macOS (Versi Pro)</span>
+                        <!-- Overlay Chat Live -->
+                        <div
+                            class="flex items-start gap-2.5 bg-slate-900/80 border border-white/10 p-3 rounded-2xl shadow-lg backdrop-blur-md">
+                            <div
+                                class="w-7 h-7 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs font-bold shrink-0">
+                                B
+                            </div>
+                            <div class="min-w-0 text-left">
+                                <span class="text-[11px] font-bold text-slate-300">Budi_Gaming:</span>
+                                <p class="text-xs text-white leading-tight">Halo bang, overlay-nya joss! 🔥</p>
+                            </div>
                         </div>
-                        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5">
-                            <path d="M5 12h14m-7-7 7 7-7 7" />
-                        </svg>
-                    </a>
+
+                        <!-- Overlay Tap-tap Layar -->
+                        <div
+                            class="flex items-center gap-3 bg-slate-900/90 border border-rose-500/30 p-3 rounded-2xl shadow-lg backdrop-blur-md">
+                            <div
+                                class="w-10 h-10 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400 shrink-0">
+                                <i class="fas fa-heart text-xs animate-ping"></i>
+                            </div>
+                            <div class="min-w-0 text-left">
+                                <p class="text-xs font-bold text-white truncate">@dika_pro</p>
+                                <p class="text-[10px] text-rose-400 font-semibold">Menyukai siaran 150x ❤️</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SISI TENGAH: Konten Utama (Rata Tengah) -->
+                    <div class="lg:col-span-6 space-y-6 text-center mx-auto max-w-2xl">
+                        <div
+                            class="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/30 px-3 py-1.5 rounded-full text-rose-400 text-xs font-bold mx-auto">
+                            <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                            Aplikasi Desktop Streamer LIVE
+                        </div>
+
+                        <h1
+                            class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-white text-center">
+                            Webdev Overlay Stream: Maksimalkan Live Stream Dalam <span
+                                class="bg-gradient-to-r from-rose-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">Satu
+                                Aplikasi Terpadu</span>
+                        </h1>
+
+                        <p class="text-slate-400 text-sm leading-relaxed text-center mx-auto max-w-xl">
+                            Atur tampilan overlay siaran, sinkronkan sesi TikTok LIVE, jalankan event interaktif, hingga
+                            pemutaran musik otomatis tanpa perlu berpindah software. Semua berjalan lancar dalam satu
+                            sistem desktop yang stabil.
+                        </p>
+
+                        <div class="grid grid-cols-3 gap-3 pt-2 max-w-lg mx-auto">
+                            <div class="bg-white/[0.03] border border-white/10 p-3 rounded-xl text-center">
+                                <span class="block text-xs text-slate-400">Integrasi</span>
+                                <span class="text-sm font-bold text-white">OBS Studio</span>
+                            </div>
+                            <div class="bg-white/[0.03] border border-white/10 p-3 rounded-xl text-center">
+                                <span class="block text-xs text-slate-400">Respon</span>
+                                <span class="text-sm font-bold text-rose-400">Realtime Sync</span>
+                            </div>
+                            <div class="bg-white/[0.03] border border-white/10 p-3 rounded-xl text-center">
+                                <span class="block text-xs text-slate-400">Platform</span>
+                                <span class="text-sm font-bold text-white">Windows & Mac</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap justify-center gap-4 pt-2">
+                            <button onclick="switchTab('download', document.querySelectorAll('.tab-btn')[2])"
+                                class="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition shadow-lg shadow-rose-500/25 flex items-center gap-2">
+                                <i class="fas fa-download"></i> Unduh Software
+                            </button>
+                            <button onclick="switchTab('harga', document.querySelectorAll('.tab-btn')[3])"
+                                class="px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-xs font-bold transition">
+                                Lihat Paket Harga
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SISI KANAN: Widget Overlay (Share, Now Playing Music, Format Request) -->
+                    <div class="hidden lg:flex lg:col-span-3 flex-col gap-3">
+                        <!-- Overlay Share -->
+                        <div
+                            class="flex items-center gap-3 bg-slate-900/90 border border-blue-500/30 p-3 rounded-2xl shadow-lg backdrop-blur-md">
+                            <div
+                                class="w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0">
+                                <i class="fas fa-share text-xs"></i>
+                            </div>
+                            <div class="min-w-0 text-left">
+                                <p class="text-xs font-bold text-white truncate">@reza_official</p>
+                                <p class="text-[10px] text-blue-400 font-medium">Membagikan live stream 🚀</p>
+                            </div>
+                        </div>
+
+                        <!-- Overlay Musik Now Playing -->
+                        <div
+                            class="bg-slate-900/90 border border-purple-500/30 p-3 rounded-2xl shadow-lg backdrop-blur-md space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-purple-400 flex items-center gap-1">
+                                    <i class="fas fa-music animate-spin"></i> NOW PLAYING
+                                </span>
+                                <span
+                                    class="text-[9px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-mono">02:45</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-purple-600/30 border border-purple-400/30 flex items-center justify-center text-purple-300 shrink-0 font-bold text-xs">
+                                    🎵
+                                </div>
+                                <div class="min-w-0 text-left">
+                                    <p class="text-xs font-bold text-white truncate">DJ Viral TikTok 2026</p>
+                                    <p class="text-[10px] text-slate-400 truncate">Req: @penonton_setia</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Overlay Format Request Musik -->
+                        <div
+                            class="bg-slate-900/90 border border-rose-500/30 p-3 rounded-2xl shadow-lg backdrop-blur-md space-y-1.5 text-left">
+                            <div class="flex items-center gap-1.5 text-rose-400 font-bold text-[11px]">
+                                <i class="fas fa-compact-disc"></i> Format Request Lagu
+                            </div>
+                            <div class="space-y-1 font-mono text-[10px]">
+                                <div class="bg-black/50 p-1.5 rounded border border-white/5 text-slate-300">
+                                    <span class="text-rose-400 font-bold">!play</span> Judul Lagu - Nama Artis
+                                </div>
+                                <div class="bg-black/50 p-1.5 rounded border border-white/5 text-slate-300">
+                                    <span class="text-rose-400 font-bold">!req</span> Judul Lagu - Nama Artis
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
-        </div>
 
-        <div class="main-card">
-            <h2>WebDev Overlay Sync</h2>
-            <p style="color: var(--text-dim); font-size: 1.1rem; margin-bottom: 10px;">
-                Investasi sekali untuk akses seumur hidup. Unlock fitur pro, integrasi realtime, dan update otomatis
-                tanpa biaya langganan.
-            </p>
 
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Lisensi Produk</th>
-                            <th>Investasi</th>
-                            <th>Keuntungan Utama</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>WebDev Overlay Sync (Pro)</td>
-                            <td>Rp 350.000</td>
-                            <td><span class="badge-strategi"
-                                    style="background: rgba(217, 70, 239, 0.15); border-color: #d946ef; color: #fff;">Sekali
-                                    Bayar, Update Selamanya 💎</span></td>
-                            <td>
-                                <a href="https://wa.me/6281343901082?text=Halo%20Admin,%20saya%20mau%20order%20lisensi%20WebDev%20Overlay%20Sync."
-                                    target="_blank" class="btn-buy-wa">Order Lisensi</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
-        <div class="main-card">
-            <h2>Premium Features</h2>
-            <p style="color: var(--text-dim); font-size: 1.1rem; margin:0;">Daftar harga untuk membuka fitur Song
-                Request secara realtime dengan sistem update berkala.</p>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Paket</th>
-                            <th>Durasi</th>
-                            <th>Harga</th>
-                            <th>Alasan Beli</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Basic Pro</td>
-                            <td>1 Bulan</td>
-                            <td>Rp 29.000</td>
-                            <td><span class="badge-strategi">Tes Ombak Dulu 🌊</span></td>
-                            <td><a href="https://wa.me/6281343901082?text=Halo%20Admin,%20saya%20mau%20gas%20beli%20paket%20*Basic%20Pro*%20untuk%20WDTiktok%20Engine."
-                                    target="_blank" class="btn-buy-wa">CO</a></td>
-                        </tr>
-                        <tr>
-                            <td>Smart Pro</td>
-                            <td>3 Bulan</td>
-                            <td>Rp 79.000</td>
-                            <td><span class="badge-strategi"
-                                    style="background: rgba(217, 70, 239, 0.15); border-color: rgba(217, 70, 239, 0.3); color: #f472b6;">Balik
-                                    Modal Cepat ⚡</span></td>
-                            <td><a href="https://wa.me/6281343901082?text=Halo%20Admin,%20saya%20mau%20gas%20beli%20paket%20*Smart%20Pro*%20untuk%20WDTiktok%20Engine."
-                                    target="_blank" class="btn-buy-wa">CO</a></td>
-                        </tr>
-                        <tr>
-                            <td>Half-Year Pro</td>
-                            <td>6 Bulan</td>
-                            <td>Rp 149.000</td>
-                            <td><span class="badge-strategi">Gaspol Tiap Hari 🚀</span></td>
-                            <td><a href="https://wa.me/6281343901082?text=Halo%20Admin,%20saya%20mau%20gas%20beli%20paket%20*Half-Year%20Pro*%20untuk%20WDTiktok%20Engine."
-                                    target="_blank" class="btn-buy-wa">CO</a></td>
-                        </tr>
-                        <tr>
-                            <td>Best Value Pro</td>
-                            <td>1 Tahun</td>
-                            <td>Rp 249.000</td>
-                            <td><span class="badge-strategi"
-                                    style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fcd34d; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">Sumpah
-                                    Ini Murah Banget 😱</span></td>
-                            <td><a href="https://wa.me/6281343901082?text=Halo%20Admin,%20saya%20mau%20gas%20beli%20paket%20*Best%20Value%20Pro*%20untuk%20WDTiktok%20Engine."
-                                    target="_blank" class="btn-buy-wa">CO</a></td>
-                        </tr>
-                        <tr>
-                            <td>VIP Lifetime</td>
-                            <td>Selamanya</td>
-                            <td>Rp 400.000</td>
-                            <td><span class="badge-strategi"
-                                    style="background: linear-gradient(90deg, rgba(217, 70, 239, 0.3), rgba(99, 102, 241, 0.3)); border-color: #d946ef; color: #ffffff; box-shadow: 0 0 20px rgba(217, 70, 239, 0.4); letter-spacing: 0.5px;">Dapat
-                                    update selamanya 💎</span></td>
-                            <td><a href="https://wa.me/6281343901082?text=Halo%20Admin,%20saya%20mau%20gas%20beli%20paket%20*VIP%20Lifetime*%20untuk%20WDTiktok%20Engine."
-                                    target="_blank" class="btn-buy-wa">CO</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="comment-section">
-            <h3>Absen dulu brow!</h3>
-            <p>Ketik pesan di sini.</p>
-            <div class="input-group">
-                <input type="text" id="commentInput" placeholder="Contoh: 'WebDev emang Gacor!'">
-                <button id="sendBtn" class="btn-send" onclick="addComment()">KIRIM</button>
-            </div>
+                <div class="bg-white text-slate-900 p-6 sm:p-8 rounded-3xl shadow-2xl border border-slate-200 mt-8">
+    <!-- Header Showcase -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 pb-4 border-b border-slate-200">
+        <div>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-rose-600 bg-rose-100 px-2.5 py-1 rounded-md">
+                UI Showcase
+            </span>
+            <h3 class="text-xl font-extrabold text-slate-900 mt-1">Pratinjau Antarmuka Aplikasi</h3>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = 'https://sbbcxsowhcospqfhxhmp.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiYmN4c293aGNvc3BxZmh4aG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNTI4NzMsImV4cCI6MjA4NzcyODg3M30.8eHGLCwfxvb-9dMHHQvDJp6OcfWAzZHwcBI1TDpo7qw';
+    <!-- Container Slider -->
+    <div id="app-carousel" class="aspect-video bg-slate-950 rounded-2xl overflow-hidden relative border border-slate-800 shadow-inner group flex items-center justify-center">
 
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const sound = document.getElementById('notifSound');
-        let localComments = [];
+        <!-- Item Slide 1 -->
+        <div class="carousel-slide absolute inset-0 opacity-100 pointer-events-auto transition-opacity duration-700 ease-in-out flex items-center justify-center p-2">
+            <img src="gambarapp/koneksi.png" alt="Dashboard Utama" class="w-full h-full object-contain cursor-pointer hover:scale-[1.01] transition-transform duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-left pointer-events-none">
+                <p class="text-white font-bold text-sm">Dashboard Control Center</p>
+                <p class="text-xs text-slate-300">Pengaturan overlay, widget, dan statistik stream secara real-time.</p>
+            </div>
+        </div>
 
-        function showOverlay(text) {
-            const container = document.getElementById('overlay-container');
+        <!-- Item Slide 2 -->
+        <div class="carousel-slide absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700 ease-in-out flex items-center justify-center p-2">
+            <img src="gambarapp/assetsoverlay.png" alt="Song Request & TTS" class="w-full h-full object-contain cursor-pointer hover:scale-[1.01] transition-transform duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-left pointer-events-none">
+                <p class="text-white font-bold text-sm">Song Request & Voice TTS</p>
+                <p class="text-xs text-slate-300">Manajemen antrean lagu YouTube dan AI Google Cloud Voice Synthesizer.</p>
+            </div>
+        </div>
 
-            if (container.children.length >= 15) {
-                const oldest = container.lastElementChild;
-                oldest.classList.add('fade-out');
-                setTimeout(() => oldest.remove(), 800);
-            }
+        <!-- Item Slide 3 -->
+        <div class="carousel-slide absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700 ease-in-out flex items-center justify-center p-2">
+            <img src="gambarapp/streamtools.png" alt="OBS Live Bridge" class="w-full h-full object-contain cursor-pointer hover:scale-[1.01] transition-transform duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-left pointer-events-none">
+                <p class="text-white font-bold text-sm">OBS & TikTok Live Studio Sync</p>
+                <p class="text-xs text-slate-300">Koneksi cepat via WebSocket untuk sinkronisasi browser source secara instan.</p>
+            </div>
+        </div>
 
-            const bubble = document.createElement('div');
-            bubble.className = 'chat-bubble';
-            bubble.innerHTML = `<strong>User:</strong> ${text}`;
+        <!-- Item Slide 4 -->
+        <div class="carousel-slide absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700 ease-in-out flex items-center justify-center p-2">
+            <img src="gambarapp/requestmusik.png" alt="Request Musik" class="w-full h-full object-contain cursor-pointer hover:scale-[1.01] transition-transform duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-left pointer-events-none">
+                <p class="text-white font-bold text-sm">Fitur Request Musik</p>
+                <p class="text-xs text-slate-300">Manajemen antrean lagu interaktif untuk audiens.</p>
+            </div>
+        </div>
 
-            container.prepend(bubble);
+        <!-- Tombol Navigasi Manual (Kiri / Kanan) -->
+        <button id="prev-slide" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-10">
+            <i class="fas fa-chevron-left text-xs"></i>
+        </button>
+        <button id="next-slide" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-10">
+            <i class="fas fa-chevron-right text-xs"></i>
+        </button>
 
-            sound.currentTime = 0;
-            sound.play().catch(() => { console.log("Klik layar dulu biar suara aktif!"); });
+        <!-- Indicator Dots -->
+        <div id="carousel-dots" class="absolute bottom-3 right-4 flex items-center gap-1.5 z-10">
+            <button class="dot-btn w-2.5 h-2.5 rounded-full bg-white transition-all duration-300"></button>
+            <button class="dot-btn w-2.5 h-2.5 rounded-full bg-white/40 transition-all duration-300"></button>
+            <button class="dot-btn w-2.5 h-2.5 rounded-full bg-white/40 transition-all duration-300"></button>
+            <button class="dot-btn w-2.5 h-2.5 rounded-full bg-white/40 transition-all duration-300"></button>
+        </div>
+    </div>
+</div>
 
-            setTimeout(() => {
-                if (bubble) {
-                    bubble.classList.add('fade-out');
-                    setTimeout(() => bubble.remove(), 800);
+<!-- Modal Pop-Up Zoom Gambar (Lightbox) -->
+<div id="image-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 sm:p-8 transition-all duration-300">
+    <!-- Tombol Close Modal -->
+    <button id="close-modal" class="absolute top-5 right-5 w-11 h-11 bg-white/10 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-xl transition-all z-20 cursor-pointer shadow-lg border border-white/20">
+        <i class="fas fa-times"></i>
+    </button>
+    
+    <!-- Container Gambar Membesar -->
+    <div class="relative max-w-6xl max-h-[90vh] w-full flex items-center justify-center">
+        <img id="modal-img" src="" alt="Pratinjau Gambar Membesar" class="max-w-full max-h-[85vh] rounded-xl object-contain shadow-2xl border border-slate-700/50">
+    </div>
+</div>
+
+<!-- Script Carousel & Modal Zoom -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- LOGIK CAROUSEL ---
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.dot-btn');
+        const prevBtn = document.getElementById('prev-slide');
+        const nextBtn = document.getElementById('next-slide');
+
+        let currentIndex = 0;
+        const slideInterval = 4000;
+        let timer;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.remove('opacity-0', 'pointer-events-none');
+                    slide.classList.add('opacity-100', 'pointer-events-auto');
+                } else {
+                    slide.classList.remove('opacity-100', 'pointer-events-auto');
+                    slide.classList.add('opacity-0', 'pointer-events-none');
                 }
-            }, 12000);
+            });
+
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove('bg-white/40');
+                    dot.classList.add('bg-rose-500', 'w-6');
+                } else {
+                    dot.classList.remove('bg-rose-500', 'w-6');
+                    dot.classList.add('bg-white/40');
+                }
+            });
+
+            currentIndex = index;
         }
 
-        async function addComment() {
-            const input = document.getElementById('commentInput');
-            const val = input.value.trim();
-            if (val !== "") {
-                const { error } = await _supabase.from('komentar_wd').insert([{ pesan: val }]);
-                if (!error) input.value = "";
+        function nextSlide() {
+            const nextIndex = (currentIndex + 1) % slides.length;
+            showSlide(nextIndex);
+        }
+
+        function prevSlide() {
+            const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(prevIndex);
+        }
+
+        function startAutoSlide() {
+            timer = setInterval(nextSlide, slideInterval);
+        }
+
+        function resetAutoSlide() {
+            clearInterval(timer);
+            startAutoSlide();
+        }
+
+        nextBtn?.addEventListener('click', () => { nextSlide(); resetAutoSlide(); });
+        prevBtn?.addEventListener('click', () => { prevSlide(); resetAutoSlide(); });
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showSlide(index);
+                resetAutoSlide();
+            });
+        });
+
+        showSlide(0);
+        startAutoSlide();
+
+        // --- LOGIK MODAL POP-UP (ZOOM) ---
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-img');
+        const closeModal = document.getElementById('close-modal');
+        const slideImages = document.querySelectorAll('.carousel-slide img');
+
+        // Buka Modal saat gambar diklik
+        slideImages.forEach(img => {
+            img.addEventListener('click', () => {
+                modalImg.src = img.src;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                clearInterval(timer); // Jeda slide otomatis saat di-zoom
+            });
+        });
+
+        // Tutup Modal
+        const hideModal = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            startAutoSlide(); // Lanjut slide otomatis
+        };
+
+        closeModal?.addEventListener('click', hideModal);
+
+        // Klik di luar gambar buat tutup modal
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
             }
-        }
+        });
 
-        _supabase.channel('public:komentar_wd')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'komentar_wd' },
-                payload => {
-                    showOverlay(payload.new.pesan);
-                    localComments.push(payload.new.pesan);
-                })
-            .subscribe();
+        // Tekan tombol ESC di keyboard buat tutup modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                hideModal();
+            }
+        });
+    });
+</script>
 
-        async function initApp() {
-            const { data } = await _supabase.from('komentar_wd').select('pesan').order('created_at', { ascending: false }).limit(30);
+            </section>
 
-            if (data && data.length > 0) {
-                localComments = data.map(d => d.pesan);
+            <section id="fitur" class="tab-content hidden">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <h2 class="text-3xl font-extrabold text-white">Fitur Lengkap Aplikasi</h2>
+                    <p class="text-slate-400 text-xs mt-2">Daftar kemampuan utama yang dapat Anda gunakan untuk
+                        meningkatkan kualitas live streaming.</p>
+                </div>
 
-                let i = 0;
-                setInterval(() => {
-                    if (localComments.length > 0) {
-                        showOverlay(localComments[i % localComments.length]);
-                        i++;
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div
+                        class="bg-white/[0.03] p-6 rounded-2xl border border-white/10 hover:border-rose-500/40 transition">
+                        <div
+                            class="w-10 h-10 bg-rose-500/20 text-rose-400 rounded-xl flex items-center justify-center mb-4 text-lg">
+                            <i class="fas fa-sync"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Sinkronisasi Realtime</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Menghubungkan event live tanpa delay langsung
+                            ke overlay tayangan Anda.</p>
+                    </div>
+
+                    <div
+                        class="bg-white/[0.03] p-6 rounded-2xl border border-white/10 hover:border-purple-500/40 transition">
+                        <div
+                            class="w-10 h-10 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center mb-4 text-lg">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Modul Request Musik</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Kelola daftar lagu otomatis berdasarkan
+                            permintaan penonton di kolom chat.</p>
+                    </div>
+
+                    <div
+                        class="bg-white/[0.03] p-6 rounded-2xl border border-white/10 hover:border-indigo-500/40 transition">
+                        <div
+                            class="w-10 h-10 bg-indigo-500/20 text-indigo-400 rounded-xl flex items-center justify-center mb-4 text-lg">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Integrasi OBS Browser Source</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Cukup salin URL browser source untuk
+                            menampilkan animasi dan widget menarik.</p>
+                    </div>
+
+                    <div
+                        class="bg-white/[0.03] p-6 rounded-2xl border border-white/10 hover:border-cyan-500/40 transition">
+                        <div
+                            class="w-10 h-10 bg-cyan-500/20 text-cyan-400 rounded-xl flex items-center justify-center mb-4 text-lg">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Filter Chat & Bot Respons</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Saring kata-kata sensitif dan berikan balasan
+                            otomatis kepada penonton.</p>
+                    </div>
+
+                    <div
+                        class="bg-white/[0.03] p-6 rounded-2xl border border-white/10 hover:border-emerald-500/40 transition">
+                        <div
+                            class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center mb-4 text-lg">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Statistik Live Sesi</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Pantau jumlah gift, pendatang baru, dan lagu
+                            yang paling sering diputar.</p>
+                    </div>
+
+                    <div
+                        class="bg-white/[0.03] p-6 rounded-2xl border border-white/10 hover:border-amber-500/40 transition">
+                        <div
+                            class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center mb-4 text-lg">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Aman & Terenkripsi</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Data sesi Anda tersimpan aman secara lokal di
+                            perangkat komputer Anda.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="download" class="tab-content hidden">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <h2 class="text-3xl font-extrabold text-white">Unduh Installer Aplikasi</h2>
+                    <p class="text-slate-400 text-xs mt-2">Pilih installer yang sesuai dengan sistem operasi perangkat
+                        Anda.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div
+                        class="bg-white/[0.03] p-6 rounded-2xl border border-white/10 hover:border-slate-400 transition flex flex-col justify-between">
+                        <div>
+                            <div
+                                class="w-12 h-12 bg-slate-800 text-slate-300 rounded-xl flex items-center justify-center mb-4 text-2xl">
+                                <i class="fab fa-windows"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg">Windows Free</h3>
+                            <p class="text-xs text-slate-400 mt-2">Versi standar gratis dengan fitur dasar untuk mencoba
+                                sistem.</p>
+                        </div>
+                        <a href="#"
+                            class="mt-8 block text-center py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition border border-white/10">
+                            Download Installer (.exe)
+                        </a>
+                    </div>
+
+                    <div
+                        class="bg-gradient-to-b from-rose-500/10 via-purple-900/20 to-black/40 p-6 rounded-2xl border border-rose-500/50 relative overflow-hidden flex flex-col justify-between shadow-xl shadow-rose-500/10">
+                        <span
+                            class="absolute top-4 right-4 bg-rose-500 text-white text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-full">Rekomendasi</span>
+                        <div>
+                            <div
+                                class="w-12 h-12 bg-rose-500/20 text-rose-400 rounded-xl flex items-center justify-center mb-4 text-2xl">
+                                <i class="fab fa-windows"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg">Windows Pro</h3>
+                            <p class="text-xs text-slate-300 mt-2">Akses ke seluruh fitur overlay, bot, dan sistem
+                                interaktif tanpa batasan.</p>
+                        </div>
+                        <a href="#"
+                            class="mt-8 block text-center py-3 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold text-xs transition shadow-lg shadow-rose-500/30">
+                            Download Pro (.exe)
+                        </a>
+                    </div>
+
+                    <div
+                        class="bg-white/[0.03] p-6 rounded-2xl border border-white/10 hover:border-purple-400/50 transition flex flex-col justify-between">
+                        <div>
+                            <div
+                                class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center mb-4 text-2xl">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg">macOS Pro</h3>
+                            <p class="text-xs text-slate-400 mt-2">Dioptimalkan untuk komputer Apple Silicon (M1/M2/M3)
+                                & Intel Mac.</p>
+                        </div>
+                        <a href="#"
+                            class="mt-8 block text-center py-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-200 font-bold text-xs transition border border-purple-500/30">
+                            Download macOS (.dmg)
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="harga" class="tab-content hidden">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <h2 class="text-3xl font-extrabold text-white">Daftar Harga & Lisensi</h2>
+                    <p class="text-slate-400 text-xs mt-2">Pilih lisensi software utama dan opsi langganan add-on yang
+                        sesuai kebutuhan Anda.</p>
+                </div>
+
+                <div
+                    class="max-w-md mx-auto mb-12 bg-gradient-to-br from-rose-900/30 via-purple-900/30 to-indigo-900/30 p-8 rounded-3xl border border-rose-500/40 text-center relative shadow-2xl">
+                    <span
+                        class="bg-rose-500 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase">Lisensi
+                        Utama Aplikasi</span>
+                    <h3 class="text-xl font-bold mt-4 text-white">Aplikasi Utama Pro</h3>
+                    <div class="my-4">
+                        <span class="text-4xl font-extrabold text-white">Rp 350.000</span>
+                        <span class="text-xs text-slate-400"> / Sekali Bayar</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-6">Akses penuh ke semua fitur dasar aplikasi
+                        desktop Pro secara permanen selamanya tanpa iuran bulanan.</p>
+                    <button
+                        class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold text-xs shadow-lg shadow-rose-500/30">Beli
+                        Lisensi Utama</button>
+                </div>
+
+                <div class="border-t border-white/10 pt-8">
+                    <h3 class="text-center text-sm font-bold text-rose-400 uppercase tracking-wider mb-6">Paket
+                        Tambahan: Fitur Request Musik</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white/[0.03] p-5 rounded-2xl border border-white/10 text-center">
+                            <h4 class="font-bold text-white text-sm">Paket 1 Bulan</h4>
+                            <p class="text-2xl font-bold text-rose-400 my-2">Rp 25.000</p>
+                            <p class="text-[11px] text-slate-400">Aktif selama 30 hari.</p>
+                        </div>
+                        <div class="bg-white/[0.03] p-5 rounded-2xl border border-white/10 text-center">
+                            <h4 class="font-bold text-white text-sm">Paket 3 Bulan</h4>
+                            <p class="text-2xl font-bold text-rose-400 my-2">Rp 65.000</p>
+                            <p class="text-[11px] text-slate-400">Hemat penggunaan 3 bulan.</p>
+                        </div>
+                        <div class="bg-white/[0.03] p-5 rounded-2xl border border-white/10 text-center">
+                            <h4 class="font-bold text-white text-sm">Paket 6 Bulan</h4>
+                            <p class="text-2xl font-bold text-rose-400 my-2">Rp 120.000</p>
+                            <p class="text-[11px] text-slate-400">Pilihan jangka menengah.</p>
+                        </div>
+                        <div
+                            class="bg-gradient-to-b from-rose-500/20 to-purple-900/30 p-5 rounded-2xl border border-rose-500/40 text-center">
+                            <span
+                                class="text-[9px] bg-rose-500 text-white font-extrabold px-2 py-0.5 rounded uppercase">Paling
+                                Laris</span>
+                            <h4 class="font-bold text-white text-sm mt-1">Paket Selamanya</h4>
+                            <p class="text-2xl font-bold text-rose-300 my-2">Rp 400.000</p>
+                            <p class="text-[11px] text-slate-300">Akses fitur musik tanpa batas waktu.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="panduan" class="tab-content hidden space-y-12">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-white mb-6">Panduan Penggunaan Cepat</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white/[0.03] p-6 rounded-2xl border border-white/10">
+                            <span
+                                class="w-7 h-7 rounded-lg bg-rose-500 text-white text-xs font-bold flex items-center justify-center mb-3">1</span>
+                            <h3 class="font-bold text-white text-sm mb-1">Unduh & Pasang</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">Jalankan file installer yang diunduh lalu
+                                ikuti langkah instalasi hingga aplikasi terbuka.</p>
+                        </div>
+                        <div class="bg-white/[0.03] p-6 rounded-2xl border border-white/10">
+                            <span
+                                class="w-7 h-7 rounded-lg bg-purple-500 text-white text-xs font-bold flex items-center justify-center mb-3">2</span>
+                            <h3 class="font-bold text-white text-sm mb-1">Hubungkan Sesi Live</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">Masukkan Username/ID akun TikTok Anda
+                                untuk menghubungkan data gift & chat secara otomatis.</p>
+                        </div>
+                        <div class="bg-white/[0.03] p-6 rounded-2xl border border-white/10">
+                            <span
+                                class="w-7 h-7 rounded-lg bg-indigo-500 text-white text-xs font-bold flex items-center justify-center mb-3">3</span>
+                            <h3 class="font-bold text-white text-sm mb-1">Pasang di OBS</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">Salin tautan Browser Source dari dashboard
+                                ke dalam OBS Studio Anda.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-extrabold text-white">Testimoni Pengguna</h2>
+                            <p class="text-xs text-slate-400 mt-1">Ulasan video langsung dari pengguna TikTok. Geser
+                                untuk melihat video lainnya.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="slideTikTok('left')"
+                                class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-rose-500 hover:border-rose-500 text-white flex items-center justify-center transition shadow-lg">
+                                <i class="fas fa-chevron-left text-xs"></i>
+                            </button>
+                            <button onclick="slideTikTok('right')"
+                                class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-rose-500 hover:border-rose-500 text-white flex items-center justify-center transition shadow-lg">
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="tiktok-slider"
+                        class="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar snap-x snap-mandatory py-2">
+
+                        <!--Video 1-->
+                        <div
+                            class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
+                            <div
+                                class="w-full h-[540px] rounded-xl overflow-hidden border border-white/10 bg-black/40 relative flex items-center justify-center">
+                                <iframe class="w-full h-full rounded-xl"
+                                    src="https://www.tiktok.com/player/v1/7661983548135460117?autoplay=1&muted=1&loop=1"
+                                    title="TikTok Video Player" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen frameborder="0">
+                                </iframe>
+                            </div>
+
+                            <div class="mt-3 px-1 space-y-2 relative z-20">
+                                <button type="button"
+                                    onclick="window.open('https://www.tiktok.com/@bagus_caraka/video/7661983548135460117', '_blank')"
+                                    class="w-full relative z-30 cursor-pointer inline-flex items-center justify-between px-3.5 py-2.5 bg-rose-500/20 hover:bg-rose-500 border border-rose-500/40 text-rose-300 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 shadow-md group">
+                                    <span class="flex items-center gap-1.5 pointer-events-none">
+                                        <i class="fab fa-tiktok text-xs"></i>
+                                        <span>Tonton di TikTok</span>
+                                    </span>
+                                    <i
+                                        class="fas fa-external-link-alt text-[10px] pointer-events-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--Video 2-->
+                        <div
+                            class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
+                            <div
+                                class="w-full h-[540px] rounded-xl overflow-hidden border border-white/10 bg-black/40 relative flex items-center justify-center">
+                                <iframe class="w-full h-full rounded-xl"
+                                    src="https://www.tiktok.com/player/v1/7668320675345763604?autoplay=1&muted=1&loop=1"
+                                    title="TikTok Video Player" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen frameborder="0">
+                                </iframe>
+                            </div>
+
+                            <div class="mt-3 px-1 space-y-2 relative z-20">
+                                <button type="button"
+                                    onclick="window.open('https://www.tiktok.com/@maspriirama/video/7668320675345763604', '_blank')"
+                                    class="w-full relative z-30 cursor-pointer inline-flex items-center justify-between px-3.5 py-2.5 bg-rose-500/20 hover:bg-rose-500 border border-rose-500/40 text-rose-300 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 shadow-md group">
+                                    <span class="flex items-center gap-1.5 pointer-events-none">
+                                        <i class="fab fa-tiktok text-xs"></i>
+                                        <span>Tonton di TikTok</span>
+                                    </span>
+                                    <i
+                                        class="fas fa-external-link-alt text-[10px] pointer-events-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--Video 3-->
+                        <div
+                            class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
+                            <div
+                                class="w-full h-[540px] rounded-xl overflow-hidden border border-white/10 bg-black/40 relative flex items-center justify-center">
+                                <iframe class="w-full h-full rounded-xl"
+                                    src="https://www.tiktok.com/player/v1/7662438975197498644?autoplay=1&muted=1&loop=1"
+                                    title="TikTok Video Player" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen frameborder="0">
+                                </iframe>
+                            </div>
+
+                            <div class="mt-3 px-1 space-y-2 relative z-20">
+                                <button type="button"
+                                    onclick="window.open('https://www.tiktok.com/@bagus_caraka/video/7662438975197498644', '_blank')"
+                                    class="w-full relative z-30 cursor-pointer inline-flex items-center justify-between px-3.5 py-2.5 bg-rose-500/20 hover:bg-rose-500 border border-rose-500/40 text-rose-300 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 shadow-md group">
+                                    <span class="flex items-center gap-1.5 pointer-events-none">
+                                        <i class="fab fa-tiktok text-xs"></i>
+                                        <span>Tonton di TikTok</span>
+                                    </span>
+                                    <i
+                                        class="fas fa-external-link-alt text-[10px] pointer-events-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <!--Video 4-->
+                        <div
+                            class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
+                            <div
+                                class="w-full h-[540px] rounded-xl overflow-hidden border border-white/10 bg-black/40 relative flex items-center justify-center">
+                                <iframe class="w-full h-full rounded-xl"
+                                    src="https://www.tiktok.com/player/v1/7657059626394930452?autoplay=1&muted=1&loop=1"
+                                    title="TikTok Video Player" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen frameborder="0">
+                                </iframe>
+                            </div>
+
+                            <div class="mt-3 px-1 space-y-2 relative z-20">
+                                <button type="button"
+                                    onclick="window.open('https://www.tiktok.com/@si_nine/video/7657059626394930452', '_blank')"
+                                    class="w-full relative z-30 cursor-pointer inline-flex items-center justify-between px-3.5 py-2.5 bg-rose-500/20 hover:bg-rose-500 border border-rose-500/40 text-rose-300 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 shadow-md group">
+                                    <span class="flex items-center gap-1.5 pointer-events-none">
+                                        <i class="fab fa-tiktok text-xs"></i>
+                                        <span>Tonton di TikTok</span>
+                                    </span>
+                                    <i
+                                        class="fas fa-external-link-alt text-[10px] pointer-events-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--Video 5-->
+                        <div
+                            class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
+                            <div
+                                class="w-full h-[540px] rounded-xl overflow-hidden border border-white/10 bg-black/40 relative flex items-center justify-center">
+                                <iframe class="w-full h-full rounded-xl"
+                                    src="https://www.tiktok.com/player/v1/7673531170864450837?autoplay=1&muted=1&loop=1"
+                                    title="TikTok Video Player" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen frameborder="0">
+                                </iframe>
+                            </div>
+
+                            <div class="mt-3 px-1 space-y-2 relative z-20">
+                                <button type="button"
+                                    onclick="window.open('https://www.tiktok.com/@yusripika/video/7673531170864450837', '_blank')"
+                                    class="w-full relative z-30 cursor-pointer inline-flex items-center justify-between px-3.5 py-2.5 bg-rose-500/20 hover:bg-rose-500 border border-rose-500/40 text-rose-300 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 shadow-md group">
+                                    <span class="flex items-center gap-1.5 pointer-events-none">
+                                        <i class="fab fa-tiktok text-xs"></i>
+                                        <span>Tonton di TikTok</span>
+                                    </span>
+                                    <i
+                                        class="fas fa-external-link-alt text-[10px] pointer-events-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <script>
+                    function slideTikTok(direction) {
+                        const slider = document.getElementById('tiktok-slider');
+                        const scrollAmount = 360;
+                        if (direction === 'left') {
+                            slider.scrollBy({left: -scrollAmount, behavior: 'smooth'});
+                        } else {
+                            slider.scrollBy({left: scrollAmount, behavior: 'smooth'});
+                        }
                     }
-                }, 4500);
-            }
-        }
+                </script>
 
-        initApp();
+            </section>
+
+
+
+            <section id="informasi" class="tab-content hidden">
+                <div class="max-w-3xl mx-auto bg-white/[0.03] p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-white">Informasi Aplikasi</h2>
+                        <p class="text-xs text-slate-400 mt-1">Detail spesifikasi, teknologi pendukung, dan kontak resmi
+                            pengembang.</p>
+                    </div>
+
+                    <div class="space-y-4 text-xs text-slate-300">
+                        <div class="p-4 bg-black/30 rounded-xl border border-white/5 space-y-3">
+                            <span class="font-bold text-slate-300 text-sm">Spesifikasi Minimum & Kompatibilitas:</span>
+                            <ul class="list-disc list-outside pl-5 text-slate-400 space-y-1.5">
+                                <li><strong class="text-slate-300 font-semibold">OS:</strong> Windows 10/11 (64-bit)
+                                    atau macOS 11+.</li>
+                                <li><strong class="text-slate-300 font-semibold">RAM:</strong> Minimum 4 GB (Rekomendasi
+                                    8 GB).</li>
+                                <li><strong class="text-slate-300 font-semibold">Koneksi Internet:</strong> Minimal 10
+                                    Mbps.</li>
+                                <li><strong class="text-slate-300 font-semibold">Software Stream:</strong> OBS Studio,
+                                    TikTok LIVE Studio, Streamlabs Desktop, PRISM Live Studio, serta aplikasi penyiaran
+                                    yang mendukung <em>Browser Source</em>.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-4 bg-black/30 rounded-xl border border-white/5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-slate-200 text-sm">Teknologi & Core Engine</span>
+                                <span
+                                    class="text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded-full font-semibold">Node
+                                    & Electron Stack</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 text-emerald-400">
+                                        <i class="fab fa-node-js text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">Node.js</h4>
+                                        <p class="text-[10px] text-slate-400 truncate">Runtime Engine</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0 text-cyan-400">
+                                        <i class="fas fa-atom text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">Electron</h4>
+                                        <p class="text-[10px] text-slate-400 truncate">Desktop Framework</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-slate-500/10 border border-slate-500/20 flex items-center justify-center shrink-0 text-slate-300">
+                                        <i class="fas fa-server text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">Express.js</h4>
+                                        <p class="text-[10px] text-slate-400 truncate">Local Server & REST API</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 text-indigo-400">
+                                        <i class="fas fa-broadcast-tower text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">OBS WebSocket API
+                                        </h4>
+                                        <p class="text-[10px] text-slate-400 truncate">OBS Live Bridge & Overlay</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0 text-purple-400">
+                                        <i class="fas fa-network-wired text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">WebSocket Protocol
+                                        </h4>
+                                        <p class="text-[10px] text-slate-400 truncate">Realtime Sync Engine</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 text-blue-400">
+                                        <i class="fas fa-database text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">SQLite3</h4>
+                                        <p class="text-[10px] text-slate-400 truncate">Database Lokal</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 text-amber-400">
+                                        <i class="fab fa-google text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">Google Cloud TTS
+                                        </h4>
+                                        <p class="text-[10px] text-slate-400 truncate">AI Voice Synthesizer</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0 text-red-400">
+                                        <i class="fab fa-youtube text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">YouTube Data API
+                                        </h4>
+                                        <p class="text-[10px] text-slate-400 truncate">Song Request Engine</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center gap-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 rounded-xl transition-all duration-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shrink-0 text-sky-400">
+                                        <i class="fab fa-css3-alt text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-semibold text-slate-200 text-[11px] truncate">Custom CSS3</h4>
+                                        <p class="text-[10px] text-slate-400 truncate">Custom Overlay Styling</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="pt-6 mt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="space-y-1 text-center sm:text-left">
+                                <div class="text-rose-400 font-extrabold text-sm tracking-wide">
+                                    Webdev Overlay Stream
+                                </div>
+                                <p class="text-slate-300 text-xs font-medium">
+                                    Pengembang: <span class="text-white font-semibold">Yusrianto Lana,
+                                        S.Kom.,M.Kom</span>
+                                </p>
+                                <p
+                                    class="text-slate-400 text-[11px] flex items-center justify-center sm:justify-start gap-1">
+                                    <i class="fas fa-map-marker-alt text-rose-400"></i> Kota Parepare - Sulawesi Selatan
+                                </p>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <a href="https://wa.me/" target="_blank" rel="noopener noreferrer"
+                                    class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all duration-200"
+                                    title="WhatsApp">
+                                    <i class="fab fa-whatsapp text-sm"></i>
+                                </a>
+                                <a href="https://tiktok.com/" target="_blank" rel="noopener noreferrer"
+                                    class="w-9 h-9 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-200 hover:bg-slate-700 hover:text-white flex items-center justify-center transition-all duration-200"
+                                    title="TikTok">
+                                    <i class="fab fa-tiktok text-sm"></i>
+                                </a>
+                                <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer"
+                                    class="w-9 h-9 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 hover:bg-pink-600 hover:text-white flex items-center justify-center transition-all duration-200"
+                                    title="Instagram">
+                                    <i class="fab fa-instagram text-sm"></i>
+                                </a>
+                                <a href="mailto:email@domain.com"
+                                    class="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all duration-200"
+                                    title="Email">
+                                    <i class="fas fa-envelope text-sm"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer
+            class="pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+            <p>&copy; 2026 Webdev Overlay Stream. All rights reserved.</p>
+            <div class="flex space-x-4">
+                <a href="#" class="hover:text-slate-300 transition">Syarat & Ketentuan</a>
+                <a href="#" class="hover:text-slate-300 transition">Kebijakan Privasi</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script async src="https://www.tiktok.com/embed.js"></script>
+
+    <script>
+        function switchTab(tabId, btnElement) {
+            // Sembunyikan semua tab content
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+
+            // Tampilkan tab yang dipilih
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Reset style tombol navigasi
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-white', 'bg-rose-500/20', 'border', 'border-rose-500/40');
+                btn.classList.add('hover:text-white', 'hover:bg-white/5');
+            });
+
+            // Beri style aktif pada tombol yang diklik
+            btnElement.classList.add('text-white', 'bg-rose-500/20', 'border', 'border-rose-500/40');
+            btnElement.classList.remove('hover:text-white', 'hover:bg-white/5');
+        }
     </script>
 </body>
 
