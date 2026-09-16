@@ -1234,6 +1234,32 @@
     }
 </script>
 
+
+<script>
+    //Tab membuka halman menggunakan tag #claim-voucher
+    function bukaTabDariURL( ) {
+        const namaTab = window.location.hash.replace('#', '');
+
+        if (!namaTab) return;
+
+        const target = document.getElementById(namaTab);
+
+        if (!target) return;
+
+        const tombol = document.querySelector(
+            `.tab-btn[onclick*="'${namaTab}'"]`
+        );
+
+        if (typeof switchTab === 'function') {
+            switchTab(namaTab, tombol || null);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', bukaTabDariURL);
+    window.addEventListener('hashchange', bukaTabDariURL);
+</script>
+
+
 </body>
 
 </html>
