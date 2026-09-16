@@ -88,6 +88,9 @@
                 <button onclick="switchTab('harga', this)"
                     class="tab-btn px-4 py-2 rounded-xl transition hover:text-white hover:bg-white/5">Paket
                     Harga</button>
+                <button onclick="switchTab('claim-voucher', this)"
+                    class="tab-btn px-4 py-2 rounded-xl transition hover:text-white hover:bg-white/5">
+                    Claim Voucher</button>
                 <button onclick="switchTab('panduan', this)"
                     class="tab-btn px-4 py-2 rounded-xl transition hover:text-white hover:bg-white/5">Panduan &
                     Testi</button>
@@ -640,7 +643,7 @@
                         <span class="text-xs text-slate-400"> / Sekali Bayar</span>
                     </div>
                     <p class="text-xs text-slate-300 leading-relaxed mb-6">Akses penuh ke semua fitur dasar aplikasi
-                        desktop Pro secara permanen selamanya tanpa iuran bulanan.</p>
+                        desktop Pro secara permanen tanpa iuran bulanan.</p>
                     <button
                         class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold text-xs shadow-lg shadow-rose-500/30">Beli
                         Lisensi Utama</button>
@@ -649,7 +652,7 @@
                 <div class="border-t border-white/10 pt-8">
                     <h3 class="text-center text-sm font-bold text-rose-400 uppercase tracking-wider mb-6">Paket
                         Tambahan: Fitur Request Musik</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div class="bg-white/[0.03] p-5 rounded-2xl border border-white/10 text-center">
                             <h4 class="font-bold text-white text-sm">Paket 1 Bulan</h4>
                             <p class="text-2xl font-bold text-rose-400 my-2">Rp 25.000</p>
@@ -665,14 +668,67 @@
                             <p class="text-2xl font-bold text-rose-400 my-2">Rp 120.000</p>
                             <p class="text-[11px] text-slate-400">Pilihan jangka menengah.</p>
                         </div>
-                        <div
-                            class="bg-gradient-to-b from-rose-500/20 to-purple-900/30 p-5 rounded-2xl border border-rose-500/40 text-center">
-                            <span
-                                class="text-[9px] bg-rose-500 text-white font-extrabold px-2 py-0.5 rounded uppercase">Paling
-                                Laris</span>
-                            <h4 class="font-bold text-white text-sm mt-1">Paket Selamanya</h4>
-                            <p class="text-2xl font-bold text-rose-300 my-2">Rp 350.000</p>
-                            <p class="text-[11px] text-slate-300">Akses fitur musik tanpa batas waktu.</p>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="claim-voucher" class="tab-content hidden">
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="bg-gradient-to-br from-rose-500/10 via-purple-500/10 to-indigo-500/10 p-6 sm:p-8 rounded-3xl border border-rose-500/20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                                <i class="fas fa-ticket"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-extrabold text-white">Claim Voucher WebDev</h2>
+                                <p class="text-xs text-slate-400">Masukkan data pembelian untuk mendapatkan harga promo.</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+                            <div class="bg-black/20 border border-white/10 rounded-xl p-3"><span class="block text-[10px] text-slate-400">HARGA NORMAL</span><strong class="text-sm text-white">Rp500.000</strong></div>
+                            <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3"><span class="block text-[10px] text-emerald-300">HARGA PROMO</span><strong class="text-sm text-emerald-300">Rp450.000</strong></div>
+                            <div class="bg-black/20 border border-white/10 rounded-xl p-3"><span class="block text-[10px] text-slate-400">POTONGAN</span><strong class="text-sm text-rose-300">Rp50.000</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                        <div class="lg:col-span-3 bg-white/[0.03] p-6 rounded-3xl border border-white/10">
+                            <h3 class="text-base font-bold text-white mb-1"><i class="fas fa-clipboard-list text-rose-400 mr-2"></i>Data Pembeli</h3>
+                            <p class="text-xs text-slate-400 mb-5">Data ini akan dimasukkan ke pesan WhatsApp Admin WebDev.</p>
+                            <form id="claimVoucherForm" class="space-y-4" onsubmit="claimVoucherWebDev(event)">
+                                <div>
+                                    <label for="claimBuyerName" class="block text-xs font-semibold text-slate-300 mb-1.5">Nama Pembeli</label>
+                                    <input id="claimBuyerName" required maxlength="80" autocomplete="name" placeholder="Masukkan nama lengkap" class="w-full px-3 py-2.5 rounded-xl bg-black/25 border border-white/10 text-sm text-white outline-none focus:border-rose-400">
+                                </div>
+                                <div>
+                                    <label for="claimBuyerPhone" class="block text-xs font-semibold text-slate-300 mb-1.5">Nomor WhatsApp</label>
+                                    <input id="claimBuyerPhone" required maxlength="20" autocomplete="tel" placeholder="Contoh: 081234567890" class="w-full px-3 py-2.5 rounded-xl bg-black/25 border border-white/10 text-sm text-white outline-none focus:border-rose-400">
+                                </div>
+                                <div>
+                                    <label for="claimPromoCode" class="block text-xs font-semibold text-slate-300 mb-1.5">Kode Promo</label>
+                                    <input id="claimPromoCode" required maxlength="24" placeholder="Contoh: BUDIWEBDEV" class="w-full px-3 py-2.5 rounded-xl bg-black/25 border border-white/10 text-sm text-white uppercase outline-none focus:border-rose-400">
+                                </div>
+                                <button type="submit" class="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition shadow-lg shadow-rose-500/20">
+                                    <i class="fab fa-whatsapp mr-2"></i>Claim & Hubungi Admin
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="lg:col-span-2 bg-white/[0.03] p-6 rounded-3xl border border-white/10 h-fit">
+                            <h3 class="text-base font-bold text-white mb-3"><i class="fas fa-circle-info text-cyan-400 mr-2"></i>Informasi Claim</h3>
+                            <ul class="space-y-3 text-xs text-slate-400 leading-relaxed">
+                                <li><i class="fas fa-check text-emerald-400 mr-2"></i>Isi nama, nomor WhatsApp, dan kode promo dengan benar.</li>
+                                <li><i class="fas fa-check text-emerald-400 mr-2"></i>Harga setelah promo adalah <strong class="text-emerald-300">Rp450.000</strong>.</li>
+                                <li><i class="fas fa-check text-emerald-400 mr-2"></i>Admin akan memvalidasi pembayaran sebelum membuat lisensi.</li>
+                                <li><i class="fas fa-check text-emerald-400 mr-2"></i>Setelah validasi, aplikasi dapat diunduh dari tab Download.</li>
+                            </ul>
+                            <div class="mt-5 p-3 rounded-xl border border-amber-500/20 bg-amber-500/5 text-[11px] text-amber-200/80 leading-relaxed">
+                                Pastikan kode promo yang dimasukkan sesuai dengan kode dari member WebDev.
+                            </div>
+                            <button type="button" onclick="switchTab('download', document.querySelectorAll('.tab-btn')[2])" class="mt-4 w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-xs font-semibold transition">
+                                <i class="fas fa-download mr-2"></i>Lihat Download Aplikasi
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -728,7 +784,33 @@
                     <div id="tiktok-slider"
                         class="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar snap-x snap-mandatory py-2">
 
-                        <!--Video 1-->
+                        <!--Video-->
+                        <div
+                            class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
+                            <div
+                                class="w-full h-[540px] rounded-xl overflow-hidden border border-white/10 bg-black/40 relative flex items-center justify-center">
+                                <iframe class="w-full h-full rounded-xl"
+                                    src="https://www.tiktok.com/player/v1/7683943231465245972?autoplay=1&muted=1&loop=1"
+                                    title="TikTok Video Player" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen frameborder="0">
+                                </iframe>
+                            </div>
+
+                            <div class="mt-3 px-1 space-y-2 relative z-20">
+                                <button type="button"
+                                    onclick="window.open('https://www.tiktok.com/@si_nine/video/7683943231465245972', '_blank')"
+                                    class="w-full relative z-30 cursor-pointer inline-flex items-center justify-between px-3.5 py-2.5 bg-rose-500/20 hover:bg-rose-500 border border-rose-500/40 text-rose-300 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 shadow-md group">
+                                    <span class="flex items-center gap-1.5 pointer-events-none">
+                                        <i class="fab fa-tiktok text-xs"></i>
+                                        <span>Tonton di TikTok</span>
+                                    </span>
+                                    <i
+                                        class="fas fa-external-link-alt text-[10px] pointer-events-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--Video-->
                         <div
                             class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
                             <div
@@ -754,7 +836,33 @@
                             </div>
                         </div>
 
-                        <!--Video 2-->
+                        <!--Video-->
+                        <div
+                            class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
+                            <div
+                                class="w-full h-[540px] rounded-xl overflow-hidden border border-white/10 bg-black/40 relative flex items-center justify-center">
+                                <iframe class="w-full h-full rounded-xl"
+                                    src="https://www.tiktok.com/player/v1/7652119239909788935?autoplay=1&muted=1&loop=1"
+                                    title="TikTok Video Player" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen frameborder="0">
+                                </iframe>
+                            </div>
+
+                            <div class="mt-3 px-1 space-y-2 relative z-20">
+                                <button type="button"
+                                    onclick="window.open('https://www.tiktok.com/@bocuan_/video/7652119239909788935', '_blank')"
+                                    class="w-full relative z-30 cursor-pointer inline-flex items-center justify-between px-3.5 py-2.5 bg-rose-500/20 hover:bg-rose-500 border border-rose-500/40 text-rose-300 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 shadow-md group">
+                                    <span class="flex items-center gap-1.5 pointer-events-none">
+                                        <i class="fab fa-tiktok text-xs"></i>
+                                        <span>Tonton di TikTok</span>
+                                    </span>
+                                    <i
+                                        class="fas fa-external-link-alt text-[10px] pointer-events-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--Video-->
                         <div
                             class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
                             <div
@@ -780,7 +888,7 @@
                             </div>
                         </div>
 
-                        <!--Video 3-->
+                        <!--Video-->
                         <div
                             class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
                             <div
@@ -807,7 +915,7 @@
                         </div>
 
 
-                        <!--Video 4-->
+                        <!--Video-->
                         <div
                             class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
                             <div
@@ -833,7 +941,7 @@
                             </div>
                         </div>
 
-                        <!--Video 5-->
+                        <!--Video-->
                         <div
                             class="snap-start shrink-0 w-[340px] bg-white/[0.04] backdrop-blur-md rounded-2xl p-3 border border-white/15 shadow-xl hover:border-rose-500/80 transition-all duration-300 flex flex-col justify-between relative">
                             <div
@@ -1106,6 +1214,26 @@
             btnElement.classList.remove('hover:text-white', 'hover:bg-white/5');
         }
     </script>
+
+<script>
+    // Ganti dengan nomor WhatsApp Admin WebDev dalam format internasional tanpa tanda +.
+    const WEBDEV_ADMIN_WHATSAPP = '6281343901082';
+
+    function claimVoucherWebDev(event) {
+        event.preventDefault();
+        const name = document.getElementById('claimBuyerName').value.trim();
+        const phone = document.getElementById('claimBuyerPhone').value.trim();
+        const code = document.getElementById('claimPromoCode').value.trim().toUpperCase();
+        if (!name || !phone || !code) return;
+        if (WEBDEV_ADMIN_WHATSAPP.includes('x')) {
+            alert('Nomor WhatsApp Admin belum diatur oleh pengelola WebDev.');
+            return;
+        }
+        const message = `Halo Admin WebDev,%0A%0ASaya ingin membeli aplikasi WebDev.%0A%0ANama Pembeli: ${encodeURIComponent(name)}%0ANomor WhatsApp: ${encodeURIComponent(phone)}%0AKode Promo: ${encodeURIComponent(code)}%0AHarga Promo: Rp450.000%0A%0AMohon informasi pembayaran selanjutnya.`;
+        window.open(`https://wa.me/${WEBDEV_ADMIN_WHATSAPP}?text=${message}`, '_blank', 'noopener,noreferrer');
+    }
+</script>
+
 </body>
 
 </html>
