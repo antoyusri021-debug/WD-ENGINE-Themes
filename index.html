@@ -691,7 +691,7 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
                             <div class="bg-black/20 border border-white/10 rounded-xl p-3"><span class="block text-[10px] text-slate-400">HARGA NORMAL</span><strong class="text-sm text-white">Rp500.000</strong></div>
-                            <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3"><span class="block text-[10px] text-emerald-300">HARGA PROMO</span><strong class="text-sm text-emerald-300">Rp450.000</strong></div>
+                            <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3"><span class="block text-[10px] text-emerald-300">HARGA PROMO</span><strong class="text-sm text-emerald-300">Rp350.000</strong></div>
                             <div class="bg-black/20 border border-white/10 rounded-xl p-3"><span class="block text-[10px] text-slate-400">POTONGAN</span><strong class="text-sm text-rose-300">Rp150.000</strong></div>
                         </div>
                     </div>
@@ -723,7 +723,7 @@
                             <h3 class="text-base font-bold text-white mb-3"><i class="fas fa-circle-info text-cyan-400 mr-2"></i>Informasi Claim</h3>
                             <ul class="space-y-3 text-xs text-slate-400 leading-relaxed">
                                 <li><i class="fas fa-check text-emerald-400 mr-2"></i>Isi nama, nomor WhatsApp, dan kode promo dengan benar.</li>
-                                <li><i class="fas fa-check text-emerald-400 mr-2"></i>Harga setelah promo adalah <strong class="text-emerald-300">Rp450.000</strong>.</li>
+                                <li><i class="fas fa-check text-emerald-400 mr-2"></i>Harga setelah promo adalah <strong class="text-emerald-300">Rp350.000</strong>.</li>
                                 <li><i class="fas fa-check text-emerald-400 mr-2"></i>Admin akan memvalidasi pembayaran sebelum membuat lisensi.</li>
                                 <li><i class="fas fa-check text-emerald-400 mr-2"></i>Setelah validasi, aplikasi dapat diunduh dari tab Download.</li>
                             </ul>
@@ -1233,7 +1233,7 @@
             alert('Nomor WhatsApp Admin belum diatur oleh pengelola WebDev.');
             return;
         }
-        const message = `Halo Admin WebDev,%0A%0ASaya ingin membeli aplikasi WebDev.%0A%0ANama Pembeli: ${encodeURIComponent(name)}%0ANomor WhatsApp: ${encodeURIComponent(phone)}%0AKode Promo: ${encodeURIComponent(code)}%0AHarga Promo: Rp450.000%0A%0AMohon informasi pembayaran selanjutnya.`;
+        const message = `Halo Admin WebDev,%0A%0ASaya ingin membeli aplikasi WebDev.%0A%0ANama Pembeli: ${encodeURIComponent(name)}%0ANomor WhatsApp: ${encodeURIComponent(phone)}%0AKode Promo: ${encodeURIComponent(code)}%0AHarga Promo: Rp350.000%0A%0AMohon informasi pembayaran selanjutnya.`;
         window.open(`https://wa.me/${WEBDEV_ADMIN_WHATSAPP}?text=${message}`, '_blank', 'noopener,noreferrer');
     }
 </script>
